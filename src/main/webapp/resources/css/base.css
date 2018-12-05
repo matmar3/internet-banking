@@ -1,0 +1,31 @@
+#main-container {
+    padding: 0;
+}
+
+.logo {
+    width: 60px;
+    height: 45px;
+}
+
+.lb-content-wrapper {
+    padding: 2em 0;
+    background-color: #E4F3FC;
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    .custom-col-md-35 {
+        -ms-flex: 0 0 30%;
+        flex: 0 0 30%;
+        max-width: 30%;
+    }
+}
