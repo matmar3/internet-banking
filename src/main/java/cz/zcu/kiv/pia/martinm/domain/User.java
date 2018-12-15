@@ -3,10 +3,12 @@ package cz.zcu.kiv.pia.martinm.domain;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -20,38 +22,74 @@ import java.util.Date;
 @Table(name = "User")
 public class User implements UserDetails, DataTransferObject<Integer> {
 
-    @ToString.Include
-    @EqualsAndHashCode.Include
+    private static final String ROLE_USER = "USER";
+    private static final String ROLE_ADMIN = "ADMIN";
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(nullable = false, name = "ID")
-    private int id;
+        @ToString.Include
+        @EqualsAndHashCode.Include
+        @GeneratedValue(strategy = GenerationType.SEQUENCE)
+        private int id;
     @Column(nullable = false, name = "FirstName")
-    private String firstName;
+        private String firstName;
     @Column(nullable = false, name = "LastName")
-    private String lastName;
+        private String lastName;
     @Column(nullable = false, name = "BirthNumber")
-    private String birthNumber;
+        private String birthNumber;
     @Column(nullable = false, name = "BirthDate")
-    private Date birthDate;
+        private Date birthDate;
 
     @Column(nullable = false, name = "Email")
-    private String email;
+        private String email;
     @Column(nullable = false, name = "MobileNumber")
-    private String mobileNumber;
+        private String mobileNumber;
     @Column(nullable = false, name = "Street")
-    private String street;
+        private String street;
     @Column(nullable = false, name = "HouseNumber")
-    private int houseNumber;
+        private int houseNumber;
     @Column(nullable = false, name = "ZipCode")
-    private int zipCode;
+        private int zipCode;
     @Column(nullable = false, name = "City")
-    private String city;
+        private String city;
 
     @Column(nullable = false, name = "Login")
-    private String login;
+        private String login;
     @Column(nullable = false, name = "Password")
-    private String password;
+        private String password;
+
+    /*
+        Spring Security
+     */
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(ROLE_USER));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    /*
+        Mappings
+    */
 
     @Override
     public Integer getId() {
@@ -104,11 +142,6 @@ public class User implements UserDetails, DataTransferObject<Integer> {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null; // Collections.singleton(new SimpleGrantedAuthority(role));
-    }
-
-    @Override
     public String getPassword() {
         return password;
     }
@@ -116,25 +149,5 @@ public class User implements UserDetails, DataTransferObject<Integer> {
     @Override
     public String getUsername() {
         return login;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }
