@@ -1,4 +1,4 @@
-package cz.zcu.kiv.pia.martinm.controller;
+package cz.zcu.kiv.pia.martinm.internetbanking.controller;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

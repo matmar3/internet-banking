@@ -1,4 +1,4 @@
-package cz.zcu.kiv.pia.martinm.domain;
+package cz.zcu.kiv.pia.martinm.internetbanking.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Date: 06.12.2018
@@ -30,7 +31,7 @@ public class User implements UserDetails, DataTransferObject<Integer> {
         @ToString.Include
         @EqualsAndHashCode.Include
         @GeneratedValue(strategy = GenerationType.SEQUENCE)
-        private int id;
+        private Integer id;
     @Column(nullable = false, name = "FirstName")
         private String firstName;
     @Column(nullable = false, name = "LastName")
@@ -47,9 +48,9 @@ public class User implements UserDetails, DataTransferObject<Integer> {
     @Column(nullable = false, name = "Street")
         private String street;
     @Column(nullable = false, name = "HouseNumber")
-        private int houseNumber;
+        private Integer houseNumber;
     @Column(nullable = false, name = "ZipCode")
-        private int zipCode;
+        private Integer zipCode;
     @Column(nullable = false, name = "City")
         private String city;
 
@@ -57,6 +58,9 @@ public class User implements UserDetails, DataTransferObject<Integer> {
         private String login;
     @Column(nullable = false, name = "Password")
         private String password;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+        private Set<Account> accounts;
 
     /*
         Spring Security
@@ -129,11 +133,11 @@ public class User implements UserDetails, DataTransferObject<Integer> {
         return street;
     }
 
-    public int getHouseNumber() {
+    public Integer getHouseNumber() {
         return houseNumber;
     }
 
-    public int getZipCode() {
+    public Integer getZipCode() {
         return zipCode;
     }
 

@@ -1,4 +1,4 @@
-package cz.zcu.kiv.pia.martinm.domain;
+package cz.zcu.kiv.pia.martinm.internetbanking.domain;
 
 import java.io.Serializable;
 

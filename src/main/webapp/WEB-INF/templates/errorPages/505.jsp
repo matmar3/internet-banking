@@ -11,6 +11,6 @@
     <title>505</title>
 </head>
 <body>
-Interní chyba.
+Interní chyba. Yeeees !!
 </body>
 </html>
