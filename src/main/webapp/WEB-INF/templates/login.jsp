@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://kwonnam.pe.kr/jsp/template-inheritance" prefix="layout"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:extends name="base.jsp">
     <layout:put block="styles">
@@ -9,11 +10,13 @@
     <layout:put block="content">
 
         <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="alert alert-warning" role="alert">
-                    ${errorMessage}
+            <c:if test="${not empty errorMessage}" >
+                <div class="row justify-content-center">
+                    <div class="alert alert-warning" role="alert">
+                            ${errorMessage}
+                    </div>
                 </div>
-            </div>
+            </c:if>
             <div class="row login-wrapper lb-content-wrapper justify-content-center">
                 <form class="col-lg-3 col-md-6 col-12 align-self-center" action="/login-process" method="post" id="account-login-form">
                     <div class="form-group">

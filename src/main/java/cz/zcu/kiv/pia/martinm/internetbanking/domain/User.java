@@ -29,7 +29,7 @@ public class User implements UserDetails, DataTransferObject<Integer> {
      * Defines possible user roles.
      */
     public enum Role {
-        USER, ADMIN
+        CUSTOMER, ADMIN
     }
 
     /**

@@ -2,6 +2,7 @@ package cz.zcu.kiv.pia.martinm.internetbanking.controller;
 
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +24,11 @@ public class GenericController {
 
     static String redirect(HttpServletRequest request, String page) {
         return "redirect:" + page;
+    }
+
+    @ModelAttribute("rootPath")
+    public String fillRootPathAttribute(HttpServletRequest request) {
+        return "http://" + request.getLocalName() + ":" + request.getLocalPort() + "/";
     }
 
 }

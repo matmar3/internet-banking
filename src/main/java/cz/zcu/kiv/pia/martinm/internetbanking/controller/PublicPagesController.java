@@ -8,6 +8,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * Date: 17.12.2018
+ *
+ * @author Martin Matas
+ */
 @Controller
 class PublicPagesController extends GenericController {
 
@@ -39,10 +44,10 @@ class PublicPagesController extends GenericController {
         User user = um.getCurrentUser();
 
         if (user.getRole().equals(User.Role.ADMIN.name())) {
-            return redirect(request, "admin");
+            return redirect(request, "admin/");
         }
-        else if (user.getRole().equals(User.Role.USER.name())) {
-            return redirect(request, "ib");
+        else if (user.getRole().equals(User.Role.CUSTOMER.name())) {
+            return redirect(request, "ib/");
         }
 
         return redirect(request, "logout");
