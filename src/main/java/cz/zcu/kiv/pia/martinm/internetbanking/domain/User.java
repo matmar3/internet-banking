@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.Set;
 
 /**
+ * User entity.
+ *
  * Date: 06.12.2018
  *
  * @author Martin Matas
@@ -23,70 +25,137 @@ import java.util.Set;
 @Table(name = "User")
 public class User implements UserDetails, DataTransferObject<Integer> {
 
-    private static final String ROLE_USER = "USER";
-    private static final String ROLE_ADMIN = "ADMIN";
+    /**
+     * Defines possible user roles.
+     */
+    public enum Role {
+        USER, ADMIN
+    }
 
+    /**
+     * User's identifier.
+     */
     @Id
     @Column(nullable = false, name = "ID")
         @ToString.Include
         @EqualsAndHashCode.Include
         @GeneratedValue(strategy = GenerationType.SEQUENCE)
         private Integer id;
+
+    /**
+     * User's first name.
+     */
     @Column(nullable = false, name = "FirstName")
         private String firstName;
+
+    /**
+     * User's last name.
+     */
     @Column(nullable = false, name = "LastName")
         private String lastName;
+
+    /**
+     * User's birth number.
+     */
     @Column(nullable = false, name = "BirthNumber")
         private String birthNumber;
+
+    /**
+     * User's birth date.
+     */
     @Column(nullable = false, name = "BirthDate")
         private Date birthDate;
 
+    /**
+     * user's email address.
+     */
     @Column(nullable = false, name = "Email")
         private String email;
+
+    /**
+     * User's mobile phone number.
+     */
     @Column(nullable = false, name = "MobileNumber")
         private String mobileNumber;
+
+    /**
+     * User's street address.
+     */
     @Column(nullable = false, name = "Street")
         private String street;
+
+    /**
+     * User's house number.
+     */
     @Column(nullable = false, name = "HouseNumber")
         private Integer houseNumber;
+
+    /**
+     * User's zip code.
+     */
     @Column(nullable = false, name = "ZipCode")
         private Integer zipCode;
+
+    /**
+     * User's city of living.
+     */
     @Column(nullable = false, name = "City")
         private String city;
 
+    /**
+     * User's login name (username).
+     */
     @Column(nullable = false, name = "Login")
-        private String login;
+        private String username;
+
+    /**
+     * User's password.
+     */
     @Column(nullable = false, name = "Password")
         private String password;
 
+    /**
+     * User's roles as authorized user.
+     */
+    @Column(nullable = false, name = "Role")
+        private String role;
+
+    /**
+     * User's accounts.
+     */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
         private Set<Account> accounts;
 
     /*
-        Spring Security
+        Spring Security (UserDetails)
      */
 
     @Override
+    @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(ROLE_USER));
+        return Collections.singleton(new SimpleGrantedAuthority(role));
     }
 
     @Override
+    @Transient
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @Transient
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @Transient
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @Transient
     public boolean isEnabled() {
         return true;
     }
@@ -152,6 +221,10 @@ public class User implements UserDetails, DataTransferObject<Integer> {
 
     @Override
     public String getUsername() {
-        return login;
+        return username;
+    }
+
+    public String getRole() {
+        return role;
     }
 }

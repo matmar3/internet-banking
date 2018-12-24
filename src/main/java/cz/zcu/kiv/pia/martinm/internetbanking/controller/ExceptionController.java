@@ -8,7 +8,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
-public class ExceptionController {
+public class ExceptionController extends GenericController {
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ModelAndView handleError404(HttpServletRequest request, Exception e)   {
