@@ -2,6 +2,7 @@ package cz.zcu.kiv.pia.martinm.internetbanking.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,6 +31,17 @@ public class User implements UserDetails, DataTransferObject<Integer> {
      */
     public enum Role {
         CUSTOMER, ADMIN
+    }
+
+    public User () {
+
+    }
+
+    public User(String firstName, String lastName, String birthNumber, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthNumber = birthNumber;
+        this.email = email;
     }
 
     /**
@@ -63,7 +75,8 @@ public class User implements UserDetails, DataTransferObject<Integer> {
     /**
      * User's birth date.
      */
-    @Column(nullable = false, name = "BirthDate")
+    @Column(name = "BirthDate")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         private Date birthDate;
 
     /**
@@ -75,31 +88,31 @@ public class User implements UserDetails, DataTransferObject<Integer> {
     /**
      * User's mobile phone number.
      */
-    @Column(nullable = false, name = "MobileNumber")
+    @Column(name = "MobileNumber")
         private String mobileNumber;
 
     /**
      * User's street address.
      */
-    @Column(nullable = false, name = "Street")
+    @Column(name = "Street")
         private String street;
 
     /**
      * User's house number.
      */
-    @Column(nullable = false, name = "HouseNumber")
-        private Integer houseNumber;
+    @Column(name = "HouseNumber")
+        private String houseNumber;
 
     /**
      * User's zip code.
      */
-    @Column(nullable = false, name = "ZipCode")
-        private Integer zipCode;
+    @Column(name = "ZipCode")
+        private String zipCode;
 
     /**
      * User's city of living.
      */
-    @Column(nullable = false, name = "City")
+    @Column(name = "City")
         private String city;
 
     /**
@@ -195,18 +208,21 @@ public class User implements UserDetails, DataTransferObject<Integer> {
 
     @Transient
     public String getAddress() {
-        return getStreet() + " " + getHouseNumber() + ", " + getZipCode() + " " + getCity();
+        if (street != null && houseNumber != null && zipCode != null && city != null) {
+            return getStreet() + " " + getHouseNumber() + ", " + getZipCode() + " " + getCity();
+        }
+        return "";
     }
 
     public String getStreet() {
         return street;
     }
 
-    public Integer getHouseNumber() {
+    public String getHouseNumber() {
         return houseNumber;
     }
 
-    public Integer getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
@@ -226,5 +242,36 @@ public class User implements UserDetails, DataTransferObject<Integer> {
 
     public String getRole() {
         return role;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setAddress(String street, String houseNumber, String zipCode, String city) {
+        this.street = street;
+        this.houseNumber = houseNumber;
+        this.zipCode = zipCode;
+        this.city = city;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

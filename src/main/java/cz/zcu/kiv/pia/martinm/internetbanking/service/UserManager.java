@@ -9,6 +9,8 @@ import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
  */
 public interface UserManager {
 
+    AuthorizedUserManager authorize(User user);
+
     User getCurrentUser();
 
 }

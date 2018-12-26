@@ -22,10 +22,16 @@ public class Account implements DataTransferObject<Integer> {
      * Account's identifier.
      */
     @Id
-        @Column(nullable = false, name = "AccountNumber")
+        @Column(nullable = false, name = "ID")
         @ToString.Include
         @EqualsAndHashCode.Include
-        private Integer accountNumber;
+        private Integer id;
+
+    /**
+     * Account's number.
+     */
+    @Column(nullable = false, name = "AccountNumber")
+        private String accountNumber;
 
     /**
      * Card number assigned to this account.
@@ -50,10 +56,10 @@ public class Account implements DataTransferObject<Integer> {
 
     @Override
     public Integer getId() {
-        return accountNumber;
+        return id;
     }
 
-    public Integer getAccountNumber() {
+    public String getAccountNumber() {
         return accountNumber;
     }
 

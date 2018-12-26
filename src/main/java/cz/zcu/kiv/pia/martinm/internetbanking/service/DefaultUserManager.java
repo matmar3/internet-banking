@@ -1,14 +1,20 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.service;
 
+import cz.zcu.kiv.pia.martinm.internetbanking.RandomNumberGenerator;
+import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.UserForm;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.UserDao;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ServerWebInputException;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Date: 23.12.2018
@@ -20,8 +26,11 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
 
     private UserDao userDao;
 
-    public DefaultUserManager(UserDao userDao) {
+    private PasswordEncoder encoder;
+
+    public DefaultUserManager(UserDao userDao, PasswordEncoder encoder) {
         this.userDao = userDao;
+        this.encoder = encoder;
     }
 
     @Override
@@ -41,4 +50,85 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
         return userDao.findByUsername(username);
     }
 
+    @Override
+    public AuthorizedUserManager authorize(User user) {
+        return new DefaultAuthorizedUserManager(user);
+    }
+
+    private class DefaultAuthorizedUserManager implements AuthorizedUserManager {
+
+        private final String USERNAME_FORMAT = "User%04d";
+
+        private User currentUser;
+
+        DefaultAuthorizedUserManager(User currentUser) {
+            this.currentUser = currentUser;
+        }
+
+        @Override
+        public User remove(Integer id) {
+            return null;
+        }
+
+        @Override
+        public User edit(User user) {
+            return null;
+        }
+
+        @Override
+        public User create(UserForm newUser){
+            if (!currentUser.getRole().equals(User.Role.ADMIN.name())) {
+                throw new AccessDeniedException("Users are not allowed to create new accounts");
+            }
+
+            if (newUser.getFirstName() == null || newUser.getLastName() == null || newUser.getBirthNumber() == null || newUser.getEmail() == null) {
+                throw new ServerWebInputException("Mandatory parameters not filled.");
+            }
+
+            String rawPassword = generatePassword();
+            String username = generateUsername();
+            User user = new User(
+                    newUser.getFirstName(),
+                    newUser.getLastName(),
+                    newUser.getBirthNumber(),
+                    newUser.getEmail());
+            user.setAddress(
+                    newUser.getStreet(),
+                    newUser.getHouseNumber(),
+                    newUser.getZipCode(),
+                    newUser.getCity());
+            user.setBirthDate(newUser.getBirthDate());
+            user.setMobileNumber(newUser.getMobileNumber());
+            user.setRole(User.Role.CUSTOMER.name());
+            user.setUsername(username);
+            user.setPassword(encoder.encode(rawPassword));
+            userDao.save(user);
+
+            /*try {
+                notificationService.sendWelcome(user, rawPassword)
+            } catch (e) {
+                throw new RuntimeException(
+                        "User has been created but email notification failed for reason: $e", e)
+            }*/
+
+            return user;
+        }
+
+        @Override
+        public List<User> findAllUsers() {
+            if (!currentUser.getRole().equals(User.Role.ADMIN.name())) {
+                throw new AccessDeniedException("Users are not allowed to see other accounts");
+            }
+            return userDao.findAll();
+        }
+
+        private String generatePassword() {
+            return RandomNumberGenerator.generate(4);
+        }
+
+        private String generateUsername() {
+            return String.format(USERNAME_FORMAT, userDao.count());
+        }
+
+    }
 }
