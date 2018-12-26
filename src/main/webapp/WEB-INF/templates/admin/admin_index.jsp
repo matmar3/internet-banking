@@ -21,7 +21,7 @@
                     </ul>
                     <ul class="nav">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">User 001</a>
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">${authorizedUser.username}</a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Nastavení</a>
                                 <div class="dropdown-divider"></div>
@@ -59,7 +59,7 @@
                                                 <td>${customer.lastName}</td>
                                                 <td>${customer.email}</td>
                                                 <td>${customer.address}</td>
-                                                <td><a href="#" class="badge badge-danger"><i class="fas fa-trash-alt"></i></a></td>
+                                                <td><a href="remove/user/${customer.id}" class="badge badge-danger"><i class="fas fa-trash-alt"></i></a></td>
                                             </tr>
                                         </c:forEach>
                                     </c:when>

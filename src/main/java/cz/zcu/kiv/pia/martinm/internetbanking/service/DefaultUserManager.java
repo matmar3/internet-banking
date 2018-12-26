@@ -67,7 +67,21 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
 
         @Override
         public User remove(Integer id) {
-            return null;
+            if (!currentUser.getRole().equals(User.Role.ADMIN.name())) {
+                throw new AccessDeniedException("Only admin can remove a user");
+            }
+
+            User user = userDao.findById(id).orElse(null);
+            if (user == null) {
+                throw new RuntimeException("User not exists."); // TODO UserNotFOundException
+            }
+
+            if (user.getRole().equals(User.Role.ADMIN.name())) {
+                throw new AccessDeniedException("Cannot remove admin's account");
+            }
+
+            user.setEnabled(false);
+            return userDao.save(user);
         }
 
         @Override
@@ -119,14 +133,19 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
             if (!currentUser.getRole().equals(User.Role.ADMIN.name())) {
                 throw new AccessDeniedException("Users are not allowed to see other accounts");
             }
-            return userDao.findAll();
+
+            List<User> users = userDao.findAll();
+            users.removeIf(u -> !u.isEnabled());
+            return users;
         }
 
-        private String generatePassword() {
+        @Override
+        public String generatePassword() {
             return RandomNumberGenerator.generate(4);
         }
 
-        private String generateUsername() {
+        @Override
+        public String generateUsername() {
             return String.format(USERNAME_FORMAT, userDao.count());
         }
 

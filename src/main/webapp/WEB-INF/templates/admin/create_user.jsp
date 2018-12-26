@@ -23,7 +23,7 @@
                     </ul>
                     <ul class="nav">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">User 001</a>
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">${authorizedUser.username}</a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Nastavení</a>
                                 <div class="dropdown-divider"></div>

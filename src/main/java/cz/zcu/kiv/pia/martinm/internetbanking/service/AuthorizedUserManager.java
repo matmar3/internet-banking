@@ -20,4 +20,8 @@ public interface AuthorizedUserManager {
 
     List<User> findAllUsers();
 
+    String generatePassword();
+
+    String generateUsername();
+
 }

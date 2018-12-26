@@ -22,7 +22,7 @@ public class GenericController {
         return "redirect:" + (referer != null ? referer : "/");
     }
 
-    static String redirect(HttpServletRequest request, String page) {
+    static String redirect(String page) {
         return "redirect:" + page;
     }
 

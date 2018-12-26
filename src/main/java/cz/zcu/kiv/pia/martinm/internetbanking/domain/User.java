@@ -134,6 +134,12 @@ public class User implements UserDetails, DataTransferObject<Integer> {
         private String role;
 
     /**
+     * User enabled.
+     */
+    @Column(nullable = false, name = "Enabled")
+        private Boolean enabled = true;
+
+    /**
      * User's accounts.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
@@ -168,9 +174,8 @@ public class User implements UserDetails, DataTransferObject<Integer> {
     }
 
     @Override
-    @Transient
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 
     /*
@@ -230,6 +235,10 @@ public class User implements UserDetails, DataTransferObject<Integer> {
         return city;
     }
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
     @Override
     public String getPassword() {
         return password;
@@ -273,5 +282,9 @@ public class User implements UserDetails, DataTransferObject<Integer> {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }

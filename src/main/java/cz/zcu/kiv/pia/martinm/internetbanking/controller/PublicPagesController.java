@@ -7,8 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Date: 17.12.2018
  *
@@ -41,17 +39,17 @@ class PublicPagesController extends GenericController {
     }
 
     @RequestMapping("/role-check")
-    String checkRoles(HttpServletRequest request) {
+    String checkRoles() {
         User user = um.getCurrentUser();
 
         if (user.getRole().equals(User.Role.ADMIN.name())) {
-            return redirect(request, "admin/");
+            return redirect("admin/");
         }
         else if (user.getRole().equals(User.Role.CUSTOMER.name())) {
-            return redirect(request, "ib/");
+            return redirect("ib/");
         }
 
-        return redirect(request, "logout");
+        return redirect("logout");
     }
 
 }

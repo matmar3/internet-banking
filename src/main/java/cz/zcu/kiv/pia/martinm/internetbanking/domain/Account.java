@@ -18,6 +18,13 @@ import javax.persistence.*;
 @Table(name = "Account")
 public class Account implements DataTransferObject<Integer> {
 
+    public Account(String accountNumber, String cardNumber, User user) {
+        this.accountNumber = accountNumber;
+        this.cardNumber = cardNumber;
+        this.balance = 0;
+        this.user = user;
+    }
+
     /**
      * Account's identifier.
      */
@@ -25,6 +32,7 @@ public class Account implements DataTransferObject<Integer> {
         @Column(nullable = false, name = "ID")
         @ToString.Include
         @EqualsAndHashCode.Include
+        @GeneratedValue(strategy = GenerationType.SEQUENCE)
         private Integer id;
 
     /**
