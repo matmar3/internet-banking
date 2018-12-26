@@ -12,6 +12,12 @@
     background-color: #E4F3FC;
 }
 
+.formError {
+    margin-left: 2em;
+    color: red;
+    font-style: italic;
+}
+
 input[type=number] {
     -moz-appearance:textfield;
 }

@@ -1,6 +1,7 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.controller;
 
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
+import cz.zcu.kiv.pia.martinm.internetbanking.service.MessageContainer;
 import cz.zcu.kiv.pia.martinm.internetbanking.service.UserManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +36,7 @@ class PublicPagesController extends GenericController {
     @RequestMapping("/login-failed")
     ModelAndView loginFailed() {
         ModelAndView mav = new ModelAndView("login");
-        mav.addObject("errorMessage", "Wrong username or password.");
+        mav.addObject("message", new MessageContainer(MessageContainer.Type.WARNING, "Wrong username or password."));
         return mav;
     }
 

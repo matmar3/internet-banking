@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://kwonnam.pe.kr/jsp/template-inheritance" prefix="layout"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html lang="cs">
 <head>
@@ -11,6 +12,8 @@
 
     <link rel="stylesheet" href="${rootPath}css/bootstrap.css">
     <link rel="stylesheet" href="${rootPath}css/base.css">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
     <layout:block name="styles">
     </layout:block>
@@ -28,6 +31,16 @@
                 </div>
             </header>
         </div>
+
+        <c:if test="${not empty message}" >
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="alert alert-${message.type.value}" role="alert">
+                            ${message.content}
+                    </div>
+                </div>
+            </div>
+        </c:if>
 
         <layout:block name="content">
         </layout:block>
