@@ -13,7 +13,7 @@ import java.util.Date;
  *
  * @author Martin Matas
  */
-public class UserForm {
+public class UserDto {
 
     @NotEmpty
     @Size(max = 20)

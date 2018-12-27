@@ -1,7 +1,6 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.service;
 
-import cz.zcu.kiv.pia.martinm.internetbanking.RandomNumberGenerator;
-import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.UserForm;
+import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.UserDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.UserDao;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
 import org.springframework.security.access.AccessDeniedException;
@@ -85,12 +84,26 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
         }
 
         @Override
-        public User edit(User user) {
-            return null;
+        public User edit(Integer id, UserDto modifiedUser) {
+            User user = userDao.getOne(id);
+
+            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(user.getId())) {
+                throw new AccessDeniedException("User cannot edit other user's account");
+            }
+
+            user.setMobileNumber(modifiedUser.getMobileNumber());
+            user.setBirthDate(modifiedUser.getBirthDate());
+            user.setAddress(
+                    modifiedUser.getStreet(),
+                    modifiedUser.getHouseNumber(),
+                    modifiedUser.getZipCode(),
+                    modifiedUser.getCity()
+            );
+            return userDao.save(user);
         }
 
         @Override
-        public User create(UserForm newUser){
+        public User create(UserDto newUser){
             if (!currentUser.getRole().equals(User.Role.ADMIN.name())) {
                 throw new AccessDeniedException("Users are not allowed to create new accounts");
             }

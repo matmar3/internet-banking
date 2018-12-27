@@ -213,7 +213,7 @@ public class User implements UserDetails, DataTransferObject<Integer> {
 
     @Transient
     public String getAddress() {
-        if (street != null && houseNumber != null && zipCode != null && city != null) {
+        if (!(isNullOrEmpty(street) && isNullOrEmpty(houseNumber) && isNullOrEmpty(zipCode) && isNullOrEmpty(city))) {
             return getStreet() + " " + getHouseNumber() + ", " + getZipCode() + " " + getCity();
         }
         return "";
@@ -287,4 +287,11 @@ public class User implements UserDetails, DataTransferObject<Integer> {
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
+
+    private boolean isNullOrEmpty(String str) {
+        if(str != null && !str.isEmpty())
+            return false;
+        return true;
+    }
+
 }
