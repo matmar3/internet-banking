@@ -141,7 +141,7 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
 
         @Override
         public String generatePassword() {
-            return RandomNumberGenerator.generate(4);
+            return String.format("%04d", userDao.count()); // TODO zapnout RandomNumberGenerator.generate(4);
         }
 
         @Override

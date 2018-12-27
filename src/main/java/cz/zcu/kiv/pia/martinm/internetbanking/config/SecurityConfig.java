@@ -1,5 +1,6 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.config;
 
+import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,8 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                     .and()
                 .authorizeRequests()
-                    .antMatchers("/ib/**").hasAuthority("USER")
-                    .antMatchers("/admin/**").hasAuthority("ADMIN")
+                    .antMatchers("/ib/**").hasAuthority(User.Role.CUSTOMER.name())
+                    .antMatchers("/admin/**").hasAuthority(User.Role.ADMIN.name())
                     .anyRequest().permitAll()
                     .and()
                 .formLogin()
