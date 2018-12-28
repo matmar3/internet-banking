@@ -2,14 +2,13 @@ package cz.zcu.kiv.pia.martinm.internetbanking.controller;
 
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.UserDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
-import cz.zcu.kiv.pia.martinm.internetbanking.service.AccountManager;
-import cz.zcu.kiv.pia.martinm.internetbanking.service.AuthorizedAccountManager;
-import cz.zcu.kiv.pia.martinm.internetbanking.service.AuthorizedUserManager;
-import cz.zcu.kiv.pia.martinm.internetbanking.service.UserManager;
+import cz.zcu.kiv.pia.martinm.internetbanking.service.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,11 +31,13 @@ public class AdministrationController extends GenericController {
     private UserManager userManager;
     private AccountManager accountManager;
     private ModelMapper modelMapper;
+    private TuringTestProvider turingTestProvider;
 
-    public AdministrationController(UserManager um, AccountManager am, ModelMapper mm) {
+    public AdministrationController(UserManager um, AccountManager am, ModelMapper mm, TuringTestProvider ttp) {
         this.userManager = um;
         this.accountManager = am;
         this.modelMapper = mm;
+        this.turingTestProvider = ttp;
     }
 
     @RequestMapping({"/", "/index"})
@@ -61,18 +62,25 @@ public class AdministrationController extends GenericController {
         if (!model.containsAttribute("newUser")) {
             model.addAttribute("newUser", new UserDto());
         }
+        model.addAttribute("turingTest", turingTestProvider.generateRandomTest());
         model.addAttribute("authorizedUser", user);
 
         return "admin/create_user";
     }
 
     @PostMapping("/create-user")
-    String createUserHandler(@Valid @ModelAttribute("newUser") UserDto newUser, BindingResult result) {
-        if (result.hasErrors()) {
+    String createUserHandler(Model model, @Valid @ModelAttribute("newUser") UserDto newUser, BindingResult result) {
+        User u = userManager.getCurrentUser();
+
+        boolean turingTestResult = turingTestProvider.testAnswer(newUser.getTuringTestId(), newUser.getTuringTestAnswer());
+        if (result.hasErrors() || !turingTestResult) {
+            if (!turingTestResult) result.addError(new FieldError("newUser", "turingTestAnswer", "Wrong answer"));
+            newUser.setTuringTestId(null);
+            model.addAttribute("turingTest", turingTestProvider.generateRandomTest());
+            model.addAttribute("authorizedUser", u);
             return "admin/create_user";
         }
 
-        User u = userManager.getCurrentUser();
         AuthorizedUserManager aum = userManager.authorize(u);
         AuthorizedAccountManager aam = accountManager.authorize(u);
         User createdUser = aum.create(newUser);

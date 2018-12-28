@@ -2,10 +2,7 @@ package cz.zcu.kiv.pia.martinm.internetbanking.controller.dto;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.Date;
 
 /**
@@ -30,6 +27,7 @@ public class UserDto {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date birthDate;
 
+    @NotEmpty
     @Size(max = 50)
     private String email;
 
@@ -47,6 +45,11 @@ public class UserDto {
 
     @Size(max = 30)
     private String city;
+
+    private Integer turingTestId;
+
+    @NotNull
+    private Integer turingTestAnswer;
 
     @NotNull
     @AssertTrue
@@ -139,5 +142,21 @@ public class UserDto {
 
     public void setTerms_conditions(Boolean terms_conditions) {
         this.terms_conditions = terms_conditions;
+    }
+
+    public Integer getTuringTestAnswer() {
+        return turingTestAnswer;
+    }
+
+    public void setTuringTestAnswer(Integer turingTestAnswer) {
+        this.turingTestAnswer = turingTestAnswer;
+    }
+
+    public Integer getTuringTestId() {
+        return turingTestId;
+    }
+
+    public void setTuringTestId(Integer turingTestId) {
+        this.turingTestId = turingTestId;
     }
 }

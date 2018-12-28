@@ -64,6 +64,11 @@
                                 </div>
                             </div>
                             <div class="form-group col-12 text-center mt-sm-5">
+                                <div class="form-group justify-content-center mb-sm-3">
+                                    <form:hidden path="turingTestId" value="${turingTest.id}" />
+                                    <form:label path="turingTestAnswer">${turingTest.question}</form:label><form:errors class="formError" path='turingTestAnswer' />
+                                    <form:input type="number" class="form-control" path="turingTestAnswer" required="required" />
+                                </div>
                                 <div class="form-inline form-check justify-content-center mb-sm-3">
                                     <form:checkbox class="form-check-input" path="terms_conditions" required="required" />
                                     <form:label class="form-check-label" path="terms_conditions"> * Souhlasím se&nbsp;<a class="alert-link" href="#">smluvními podmínkami</a>.</form:label>
