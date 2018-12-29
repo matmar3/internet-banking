@@ -1,18 +1,23 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.controller;
 
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
+import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.UserDto;
+import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
 import cz.zcu.kiv.pia.martinm.internetbanking.service.*;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.*;
 
 /**
@@ -60,14 +65,54 @@ public class InternetBankingController extends GenericController {
         return redirect("/ib/index");
     }
 
-    @RequestMapping("/transactions")
-    public ModelAndView showTransactionsRelatedToAuthorizedUser() {
+    @RequestMapping("/account/{id}")
+    public ModelAndView showTransactionsRelatedToAuthorizedUser(@PathVariable Integer id) {
         User user = userManager.getCurrentUser();
 
         ModelAndView mav = new ModelAndView("ib/transaction_history");
         mav.addObject("authorizedUser", user);
 
+        AuthorizedAccountManager aam = accountManager.authorize(user);
+        Account account;
+
+        try {
+            account = aam.findAccountById(id);
+            mav.addObject("account", account);
+            mav.addObject("transactions", aam.findAllTransactionsByAccount(account));
+        } catch (Exception e) {
+            e.printStackTrace();
+            mav.addObject("message", new MessageContainer(MessageContainer.Type.DANGER, e.getMessage()));
+        }
+
         return mav;
+    }
+
+    @RequestMapping("/create-transaction")
+    public String showTransactionForm(Model model) {
+        User user = userManager.getCurrentUser();
+
+        if (!model.containsAttribute("newTransaction")) {
+            model.addAttribute("newTransaction", new TransactionDto());
+        }
+        model.addAttribute("authorizedUser", user);
+        model.addAttribute("accounts", getPossibleAccounts(user.getAccounts()));
+
+        return "ib/create_transaction";
+    }
+
+    @PostMapping("/create-transaction")
+    public String createTransactionHandler(Model model, @Valid @ModelAttribute("newTransaction") TransactionDto newTransaction, BindingResult result) {
+        User user = userManager.getCurrentUser();
+
+        if (result.hasErrors()) {
+            model.addAttribute("authorizedUser", user);
+            model.addAttribute("accounts", getPossibleAccounts(user.getAccounts()));
+            return "ib/create_transaction";
+        }
+
+        AuthorizedAccountManager aam = accountManager.authorize(user);
+        aam.performTransaction(newTransaction);
+        return redirect("/ib/index");
     }
 
     @RequestMapping("/profile")
@@ -93,6 +138,16 @@ public class InternetBankingController extends GenericController {
         AuthorizedUserManager aum = userManager.authorize(user);
         aum.edit(user.getId(), modifiedUser);
         return redirect("/ib/index");
+    }
+
+    private Map<String, String> getPossibleAccounts(Set<Account> accounts) {
+        TreeMap<String, String> options = new TreeMap<>();
+        options.put("", "--");
+        for (Account a: accounts) {
+            options.put(a.getAccountNumber(), a.getAccountNumber() + " (" + a.getCurrency() + ")");
+        }
+
+        return options;
     }
 
     private Map<String, String> getPossibleCurrencies() {

@@ -2,3 +2,7 @@
     background-color: #fff;
     border: 2px solid #dee2e6;
 }
+
+.row-link:hover {
+    cursor: pointer;
+}

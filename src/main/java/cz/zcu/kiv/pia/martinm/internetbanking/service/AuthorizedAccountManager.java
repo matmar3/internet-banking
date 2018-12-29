@@ -1,6 +1,7 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.service;
 
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
+import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
@@ -21,7 +22,7 @@ public interface AuthorizedAccountManager {
 
     List<Transaction> findAllTransactionsByAccount(Account account);
 
-    Transaction performTransaction(Account sender, String receiver, Integer amount, ZonedDateTime date, String description);
+    Transaction performTransaction(TransactionDto transaction);
 
     String generateAccountNumber();
 

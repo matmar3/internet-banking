@@ -1,5 +1,6 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.domain;
 
+import cz.zcu.kiv.pia.martinm.internetbanking.service.CurrencyUtils;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -94,7 +95,16 @@ public class Account implements DataTransferObject<Integer> {
         return balance;
     }
 
+    @Transient
+    public String getFormatedBalance() {
+        return CurrencyUtils.format(balance, currency);
+    }
+
     public User getUser() {
         return user;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 }

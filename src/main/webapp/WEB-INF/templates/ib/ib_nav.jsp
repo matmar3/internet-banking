@@ -5,13 +5,10 @@
         <div class="nav">
             <ul class="nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/ib/index">Souhrn</a>
+                    <a class="nav-link" href="/ib/index">Přehled účtů</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/ib/transactions">Transakční historie</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Jednorázové platby</a>
+                    <a class="nav-link" href="/ib/create-transaction">Jednorázové platby</a>
                 </li>
             </ul>
             <ul class="nav">

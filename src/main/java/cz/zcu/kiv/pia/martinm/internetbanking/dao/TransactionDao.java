@@ -5,6 +5,7 @@ import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -13,9 +14,10 @@ import java.util.List;
  *
  * @author Martin Matas
  */
-public interface TransactionDao extends JpaRepository<Transaction,Integer> {
+@Repository
+public interface TransactionDao extends JpaRepository<Transaction, Integer> {
 
-    @Query("SELECT '*' FROM Transaction t WHERE (t.sourceAccount = :account OR t.targetAccount = :account) AND t.dueDate <= CURRENT_DATE ORDER BY t.dueDate DESC")
+    @Query("SELECT t FROM Transaction t WHERE t.sender = :account OR t.receiver = :account ORDER BY t.dueDate DESC")
     List<Transaction> findAllByAccount(@Param("account") Account account);
 
 }

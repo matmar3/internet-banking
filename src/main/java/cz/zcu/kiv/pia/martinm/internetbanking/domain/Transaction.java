@@ -5,7 +5,6 @@ import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -23,19 +22,23 @@ public class Transaction implements DataTransferObject<Integer> {
 
     }
 
-    public Transaction(BigDecimal receivedAmount, BigDecimal sentAmount, Date createdDate, Date dueDate,
-                       String constantSymbol, String variableSymbol, String specificSymbol, String message,
-                       Account sourceAccount, Account targetAccount) {
+    public Transaction(
+            String receivedAmount, Account receiver, String receiverAccountNumber,
+            String sentAmount, Account sender, String senderAccountNumber,
+            Date createdDate, Date dueDate,
+            String constantSymbol, String variableSymbol, String specificSymbol, String message) {
         this.receivedAmount = receivedAmount;
+        this.receiver = receiver;
+        this.receiverAccountNumber = receiverAccountNumber;
         this.sentAmount = sentAmount;
+        this.sender = sender;
+        this.senderAccountNumber = senderAccountNumber;
         this.createdDate = createdDate;
         this.dueDate = dueDate;
         this.constantSymbol = constantSymbol;
         this.variableSymbol = variableSymbol;
         this.specificSymbol = specificSymbol;
         this.message = message;
-        this.sourceAccount = sourceAccount;
-        this.targetAccount = targetAccount;
     }
 
     @Id
@@ -46,10 +49,22 @@ public class Transaction implements DataTransferObject<Integer> {
         private Integer id;
 
     @Column(nullable = false, name = "ReceivedAmount")
-        private BigDecimal receivedAmount;
+        private String receivedAmount;
+
+    @ManyToOne
+    private Account receiver;
+
+    @Column(nullable = false, name = "ReceiverAccountNumber")
+    private String receiverAccountNumber;
 
     @Column(nullable = false, name = "SentAmount")
-        private BigDecimal sentAmount;
+        private String sentAmount;
+
+    @ManyToOne
+    private Account sender;
+
+    @Column(nullable = false, name = "SenderAccountNumber")
+    private String senderAccountNumber;
 
     @Column(nullable = false, name = "CreatedDate")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -71,23 +86,33 @@ public class Transaction implements DataTransferObject<Integer> {
     @Column(name = "Message")
     private String message;
 
-    @ManyToOne
-    private Account sourceAccount;
-
-    @ManyToOne
-    private Account targetAccount;
-
     @Override
     public Integer getId() {
         return null;
     }
 
-    public BigDecimal getReceivedAmount() {
+    public String getReceivedAmount() {
         return receivedAmount;
     }
 
-    public BigDecimal getSentAmount() {
+    public Account getReceiver() {
+        return receiver;
+    }
+
+    public String getReceiverAccountNumber() {
+        return receiverAccountNumber;
+    }
+
+    public String getSentAmount() {
         return sentAmount;
+    }
+
+    public Account getSender() {
+        return sender;
+    }
+
+    public String getSenderAccountNumber() {
+        return senderAccountNumber;
     }
 
     public Date getCreatedDate() {
@@ -112,13 +137,5 @@ public class Transaction implements DataTransferObject<Integer> {
 
     public String getMessage() {
         return message;
-    }
-
-    public Account getSourceAccount() {
-        return sourceAccount;
-    }
-
-    public Account getTargetAccount() {
-        return targetAccount;
     }
 }

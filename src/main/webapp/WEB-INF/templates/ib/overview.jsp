@@ -5,6 +5,7 @@
 
 <layout:extends name="../base.jsp">
     <layout:put block="styles">
+        <link rel="stylesheet" href="../css/account.css">
     </layout:put>
 
     <layout:put block="content">
@@ -16,22 +17,20 @@
                 <div class="row">
                     <div class="col-lg-7 col-md-6 col-12">
                         <div class="h3">Přehled účtů</div>
-                        <table class="table table-striped table-sm">
+                        <table class="table table-hover table-sm">
                             <thead>
                                 <tr>
                                     <th>Číslo účtu</th>
                                     <th>Číslo platební karty</th>
                                     <th>Účetní zůstatek</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <c:forEach items="${accounts}" var="account">
-                                    <tr>
+                                    <tr class="row-link" data-href="/ib/account/${account.id}">
                                         <td>${account.accountNumber}</td>
                                         <td>${account.cardNumber}</td>
-                                        <td>${account.balance}</td>
-                                        <td>Zde bude odkaz</td>
+                                        <td>${account.formatedBalance}</td>
                                     </tr>
                                 </c:forEach>
                             </tbody>
@@ -60,6 +59,10 @@
     </layout:put>
 
     <layout:put block="scripts">
-
+        <script>
+            $(".row-link").click(function() {
+                window.location = $(this).data("href");
+            });
+        </script>
     </layout:put>
 </layout:extends>

@@ -4,38 +4,12 @@
 
 <layout:extends name="../base.jsp">
     <layout:put block="styles">
+        <link rel="stylesheet" href="../../css/account.css">
     </layout:put>
 
     <layout:put block="content">
 
-        <div class="container">
-            <nav>
-                <div class="nav">
-                    <ul class="nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/ib/index">Souhrn</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="/ib/transactions">Transakční historie</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Jednorázové platby</a>
-                        </li>
-                    </ul>
-                    <ul class="nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">User 001</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Nastavení</a>
-                                <a class="dropdown-item" href="#"><i class="fas fa-question"></i> Nápověda</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Odhlásit se <i class="fas fa-sign-out-alt"></i></a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
+        <jsp:include page="ib_nav.jsp" />
 
         <div class="container-fluid lb-content-wrapper">
             <div class="container">
@@ -63,38 +37,34 @@
                         <div class="h3">Transakční historie</div>
                         <table class="table table-striped table-sm">
                             <thead>
-                            <tr>
-                                <th>Zaúčtováno</th>
-                                <th>Typ platby</th>
-                                <th>Variabilní symbol</th>
-                                <th>Částka</th>
-                            </tr>
+                                <tr>
+                                    <th>Zaúčtováno</th>
+                                    <th>Typ platby</th>
+                                    <th>Variabilní symbol</th>
+                                    <th>Částka</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>01.09.2018</td>
-                                <td>Příchozí částka<br />Běžný účet <- Jiný účet</td>
-                                <td></td>
-                                <td>+3 000,00 CZK</td>
-                            </tr>
-                            <tr>
-                                <td>01.09.2018</td>
-                                <td>Příchozí částka<br />Běžný účet <- Jiný účet</td>
-                                <td></td>
-                                <td>+3 000,00 CZK</td>
-                            </tr>
-                            <tr>
-                                <td>01.09.2018</td>
-                                <td>Příchozí částka<br />Běžný účet <- Jiný účet</td>
-                                <td></td>
-                                <td>+3 000,00 CZK</td>
-                            </tr>
-                            <tr>
-                                <td>01.09.2018</td>
-                                <td>Příchozí částka<br />Běžný účet <- Jiný účet</td>
-                                <td></td>
-                                <td>+3 000,00 CZK</td>
-                            </tr>
+                                <c:forEach items="${transactions}" var="transaction">
+                                    <c:choose>
+                                        <c:when test="${account.accountNumber == transaction.receiverAccountNumber}">
+                                            <tr>
+                                                <td>${transaction.createdDate}</td>
+                                                <td>Příchozí částka<br />${transaction.receiverAccountNumber} <- ${transaction.senderAccountNumber}</td>
+                                                <td>${transaction.variableSymbol}</td>
+                                                <td>+ ${transaction.receivedAmount}</td>
+                                            </tr>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td>${transaction.createdDate}</td>
+                                                <td>Odchozí částka<br />${transaction.senderAccountNumber} -> ${transaction.receiverAccountNumber}</td>
+                                                <td>${transaction.variableSymbol}</td>
+                                                <td>- ${transaction.sentAmount}</td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
                             </tbody>
                         </table>
                     </div>

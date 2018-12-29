@@ -34,10 +34,10 @@ public class CurrencyUtils {
         return new BigDecimal(targetAmount.getNumber().toString());
     }
 
-    public static String format(BigDecimal amount, Currency currency) {
+    public static String format(BigDecimal amount, String currency) {
         MonetaryAmount monetaryAmount =
                 Monetary.getDefaultAmountFactory()
-                        .setCurrency(currency.getCurrencyCode())
+                        .setCurrency(currency)
                         .setNumber(amount).create();
 
         MonetaryAmountFormat amountFormat = MonetaryFormats.getAmountFormat(CZECH_LOCALE);

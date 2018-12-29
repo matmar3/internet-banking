@@ -1,15 +1,21 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.service;
 
+import cz.zcu.kiv.pia.martinm.internetbanking.Bank;
 import cz.zcu.kiv.pia.martinm.internetbanking.RandomNumberGenerator;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
+import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.AccountDao;
+import cz.zcu.kiv.pia.martinm.internetbanking.dao.TransactionDao;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.time.ZonedDateTime;
+import java.math.BigDecimal;
+import java.util.Currency;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,8 +28,11 @@ public class DefaultAccountManager implements AccountManager {
 
     private AccountDao accountDao;
 
-    public DefaultAccountManager(AccountDao accountDao) {
+    private TransactionDao transactionDao;
+
+    public DefaultAccountManager(AccountDao accountDao, TransactionDao transactionDao) {
         this.accountDao = accountDao;
+        this.transactionDao = transactionDao;
     }
 
     @Override
@@ -35,7 +44,7 @@ public class DefaultAccountManager implements AccountManager {
 
         private User currentUser;
 
-        private final String ACCOUNT_NUMBER_FORMAT = "%1$6s-%2$10s";
+        private final String ACCOUNT_NUMBER_FORMAT = "%1$6s-%2$10s/%3$d";
 
         private final String CARD_NUMBER_FORMAT = "%1$16s";
 
@@ -64,24 +73,85 @@ public class DefaultAccountManager implements AccountManager {
 
         @Override
         public Account findAccountById(int id) {
-            return null;
+            Account account = accountDao.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Account with given ID not found."));
+
+            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(account.getUser().getId())) {
+                throw new AccessDeniedException("Cannot show other user's account");
+            }
+
+            return account;
         }
 
         @Override
         public List<Transaction> findAllTransactionsByAccount(Account account) {
-            return null;
+            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(account.getUser().getId())) {
+                throw new AccessDeniedException("Cannot show other user's accounts");
+            }
+
+            return transactionDao.findAllByAccount(account);
         }
 
         @Override
-        public Transaction performTransaction(Account sender, String receiver, Integer amount, ZonedDateTime date, String description) {
-            return null;
+        public Transaction performTransaction(TransactionDto transactionDto) {
+            BigDecimal receivedAmount;
+            String receiverCurrency;
+
+            Account receiver = accountDao.findByAccountNumber(transactionDto.getReceiverAccountNumber());
+            Account sender = accountDao.findByAccountNumber(transactionDto.getSenderAccountNumber());
+
+            if (receiver == null) {
+                receivedAmount = transactionDto.getSentAmount();
+                receiverCurrency = sender.getCurrency();
+            }
+            else {
+                receivedAmount = CurrencyUtils.convert(
+                        transactionDto.getSentAmount(),
+                        Currency.getInstance(sender.getCurrency()),
+                        Currency.getInstance(receiver.getCurrency())
+                );
+                receiverCurrency = receiver.getCurrency();
+            }
+
+            Transaction newTransaction = new Transaction(
+                    CurrencyUtils.format(receivedAmount, receiverCurrency),
+                    receiver,
+                    transactionDto.getReceiverAccountNumber(),
+                    CurrencyUtils.format(transactionDto.getSentAmount(), sender.getCurrency()),
+                    sender,
+                    sender.getAccountNumber(),
+                    new Date(),
+                    (transactionDto.getDueDate() == null) ? new Date() : transactionDto.getDueDate(),
+                    transactionDto.getConstantSymbol(),
+                    transactionDto.getVariableSymbol(),
+                    transactionDto.getSpecificSymbol(),
+                    transactionDto.getMessage()
+            );
+
+            // TODO validace transake v Controlleru jeste pred timto vsim
+
+            return updateEntities(sender, transactionDto.getSentAmount(), receiver, receivedAmount, newTransaction);
+        }
+
+        private Transaction updateEntities(Account sender, BigDecimal sentAmount, Account receiver, BigDecimal receivedAmount, Transaction transaction) {
+            transaction = transactionDao.save(transaction);
+
+            if (sender != null) {
+                sender.setBalance(sender.getBalance().subtract(sentAmount));
+                accountDao.save(sender);
+            }
+            if (receiver != null) {
+                receiver.setBalance(receiver.getBalance().add(receivedAmount));
+                accountDao.save(receiver);
+            }
+
+            return transaction;
         }
 
         @Override
         public String generateAccountNumber() {
             String firstPart = RandomNumberGenerator.generate(6);
             String secondPart = RandomNumberGenerator.generate(10);
-            return String.format(ACCOUNT_NUMBER_FORMAT, firstPart, secondPart);
+            return String.format(ACCOUNT_NUMBER_FORMAT, firstPart, secondPart, Bank.CODE);
         }
 
         @Override
