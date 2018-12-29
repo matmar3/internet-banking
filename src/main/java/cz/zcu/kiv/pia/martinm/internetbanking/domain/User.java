@@ -49,9 +49,9 @@ public class User implements UserDetails, DataTransferObject<Integer> {
      */
     @Id
     @Column(nullable = false, name = "ID")
-        @ToString.Include
-        @EqualsAndHashCode.Include
-        @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @ToString.Include
+    @EqualsAndHashCode.Include
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
         private Integer id;
 
     /**
@@ -286,6 +286,10 @@ public class User implements UserDetails, DataTransferObject<Integer> {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Set<Account> getAccounts() {
+        return accounts;
     }
 
     private boolean isNullOrEmpty(String str) {

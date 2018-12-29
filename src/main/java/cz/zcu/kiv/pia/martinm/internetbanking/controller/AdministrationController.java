@@ -29,19 +29,17 @@ import java.util.List;
 public class AdministrationController extends GenericController {
 
     private UserManager userManager;
-    private AccountManager accountManager;
     private ModelMapper modelMapper;
     private TuringTestProvider turingTestProvider;
 
-    public AdministrationController(UserManager um, AccountManager am, ModelMapper mm, TuringTestProvider ttp) {
+    public AdministrationController(UserManager um, ModelMapper mm, TuringTestProvider ttp) {
         this.userManager = um;
-        this.accountManager = am;
         this.modelMapper = mm;
         this.turingTestProvider = ttp;
     }
 
     @RequestMapping({"/", "/index"})
-    ModelAndView showUsersOverview() {
+    public ModelAndView showUsersOverview() {
         User user = userManager.getCurrentUser();
 
         AuthorizedUserManager aum = userManager.authorize(user);
@@ -56,7 +54,7 @@ public class AdministrationController extends GenericController {
     }
 
     @RequestMapping("/create-user")
-    String showUserForm(Model model) {
+    public String showUserForm(Model model) {
         User user = userManager.getCurrentUser();
 
         if (!model.containsAttribute("newUser")) {
@@ -69,7 +67,7 @@ public class AdministrationController extends GenericController {
     }
 
     @PostMapping("/create-user")
-    String createUserHandler(Model model, @Valid @ModelAttribute("newUser") UserDto newUser, BindingResult result) {
+    public String createUserHandler(Model model, @Valid @ModelAttribute("newUser") UserDto newUser, BindingResult result) {
         User u = userManager.getCurrentUser();
 
         boolean turingTestResult = turingTestProvider.testAnswer(newUser.getTuringTestId(), newUser.getTuringTestAnswer());
@@ -82,14 +80,12 @@ public class AdministrationController extends GenericController {
         }
 
         AuthorizedUserManager aum = userManager.authorize(u);
-        AuthorizedAccountManager aam = accountManager.authorize(u);
-        User createdUser = aum.create(newUser);
-        aam.createAccount(createdUser);
+        aum.create(newUser);
         return redirect("/admin/index");
     }
 
     @RequestMapping("/remove/user/{id}")
-    String removeUserHandler(HttpServletRequest request, @PathVariable Integer id) {
+    public String removeUserHandler(HttpServletRequest request, @PathVariable Integer id) {
         AuthorizedUserManager aum = userManager.authorize(userManager.getCurrentUser());
         aum.remove(id);
 
@@ -97,19 +93,20 @@ public class AdministrationController extends GenericController {
     }
 
     @RequestMapping("/profile")
-    String showCurrentUserProfile(Model model) {
+    public String showCurrentUserProfile(Model model) {
         User user = userManager.getCurrentUser();
 
         if (!model.containsAttribute("modifiedUser")) {
             model.addAttribute("modifiedUser", modelMapper.map(user, UserDto.class));
         }
         model.addAttribute("authorizedUser", user);
+        model.addAttribute("modifyUserActionUrl", "/admin/profile");
 
         return "admin/admin_profile";
     }
 
     @PostMapping("/profile")
-    String modifyUserHandler(@ModelAttribute("modifiedUser") UserDto modifiedUser, BindingResult result) {
+    public String modifyUserHandler(@ModelAttribute("modifiedUser") UserDto modifiedUser, BindingResult result) {
         if (result.hasErrors()) {
             return "admin/admin_profile";
         }

@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 /**
  * Account entity.
@@ -18,10 +19,14 @@ import javax.persistence.*;
 @Table(name = "Account")
 public class Account implements DataTransferObject<Integer> {
 
-    public Account(String accountNumber, String cardNumber, User user) {
+    public Account() {
+    }
+
+    public Account(String currency, String accountNumber, String cardNumber, User user) {
+        this.currency = currency;
         this.accountNumber = accountNumber;
         this.cardNumber = cardNumber;
-        this.balance = 0;
+        this.balance = new BigDecimal(0);
         this.user = user;
     }
 
@@ -34,6 +39,12 @@ public class Account implements DataTransferObject<Integer> {
         @EqualsAndHashCode.Include
         @GeneratedValue(strategy = GenerationType.SEQUENCE)
         private Integer id;
+
+    /**
+     * Account's currency.
+     */
+    @Column(nullable = false, name = "Currency")
+    private String currency;
 
     /**
      * Account's number.
@@ -51,7 +62,7 @@ public class Account implements DataTransferObject<Integer> {
      * Account's actual balance.
      */
     @Column(nullable = false, name = "Balance")
-        private Integer balance = 0;
+        private BigDecimal balance;
 
     /**
      * Account's owner.
@@ -67,6 +78,10 @@ public class Account implements DataTransferObject<Integer> {
         return id;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -75,7 +90,7 @@ public class Account implements DataTransferObject<Integer> {
         return cardNumber;
     }
 
-    public Integer getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 

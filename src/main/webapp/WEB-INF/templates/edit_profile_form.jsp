@@ -4,7 +4,7 @@
 <div class="container-fluid lb-content-wrapper">
     <div class="container">
         <div class="row justify-content-center">
-            <form:form class="col-lg-10 col-12 align-self-center" action="/admin/profile" method="post" modelAttribute="modifiedUser" >
+            <form:form class="col-lg-10 col-12 align-self-center" action="${modifyUserActionUrl}" method="post" modelAttribute="modifiedUser" >
                 <div class="form-row">
                     <div class="form-group col-md-5 col-12">
                         <div class="h3">Osobní údaje</div>

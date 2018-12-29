@@ -1,11 +1,16 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.service;
 
 import cz.zcu.kiv.pia.martinm.internetbanking.RandomNumberGenerator;
+import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.AccountDao;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
+import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+
+import java.time.ZonedDateTime;
+import java.util.List;
 
 /**
  * Date: 26.12.2018
@@ -39,21 +44,37 @@ public class DefaultAccountManager implements AccountManager {
         }
 
         @Override
-        public Account createAccount(User user) {
-            if (user.getRole().equals(User.Role.ADMIN.name())) {
+        public Account createAccount(AccountDto newAccount, User owner) {
+            if (owner.getRole().equals(User.Role.ADMIN.name())) {
                 throw new AccessDeniedException("Admin cannot have an account");
             }
-            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !user.getId().equals(currentUser.getId())) {
+            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !owner.getId().equals(currentUser.getId())) {
                 throw new AccessDeniedException("Cannot create account for other user");
             }
 
             String cardNumber = generateCardNumber();
             String accountNumber = generateAccountNumber();
             return accountDao.save(new Account(
+               newAccount.getCurrency().getCurrencyCode(),
                accountNumber,
                cardNumber,
-               user
+               owner
             ));
+        }
+
+        @Override
+        public Account findAccountById(int id) {
+            return null;
+        }
+
+        @Override
+        public List<Transaction> findAllTransactionsByAccount(Account account) {
+            return null;
+        }
+
+        @Override
+        public Transaction performTransaction(Account sender, String receiver, Integer amount, ZonedDateTime date, String description) {
+            return null;
         }
 
         @Override
