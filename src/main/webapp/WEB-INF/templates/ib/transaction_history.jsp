@@ -13,7 +13,7 @@
 
         <div class="container-fluid lb-content-wrapper">
             <div class="container">
-                <div class="row">
+                <!--<div class="row">
                     <form id="filter-transactions-form" class="col-12 mb-sm-3">
                         <div class="form-group">
                             <div class="form-inline">
@@ -31,7 +31,7 @@
                             <button type="submit" class="btn btn-primary btn-sm">Vyhledat</button>
                         </div>
                     </form>
-                </div>
+                </div>-->
                 <div class="row">
                     <div class="col-12">
                         <div class="h3">Transakční historie</div>
@@ -40,7 +40,6 @@
                                 <tr>
                                     <th>Zaúčtováno</th>
                                     <th>Typ platby</th>
-                                    <th>Variabilní symbol</th>
                                     <th>Částka</th>
                                 </tr>
                             </thead>
@@ -51,16 +50,14 @@
                                             <tr>
                                                 <td>${transaction.createdDate}</td>
                                                 <td>Příchozí částka<br />${transaction.receiverAccountNumber} <- ${transaction.senderAccountNumber}</td>
-                                                <td>${transaction.variableSymbol}</td>
-                                                <td>+ ${transaction.receivedAmount}</td>
+                                                <td class="transaction-profit">+ ${transaction.receivedAmount}</td>
                                             </tr>
                                         </c:when>
                                         <c:otherwise>
                                             <tr>
                                                 <td>${transaction.createdDate}</td>
                                                 <td>Odchozí částka<br />${transaction.senderAccountNumber} -> ${transaction.receiverAccountNumber}</td>
-                                                <td>${transaction.variableSymbol}</td>
-                                                <td>- ${transaction.sentAmount}</td>
+                                                <td class="transaction-cost">- ${transaction.sentAmount}</td>
                                             </tr>
                                         </c:otherwise>
                                     </c:choose>
@@ -73,20 +70,24 @@
                     <nav class="col-12">
                         <ul class="pagination justify-content-center">
                             <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
+                                <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.previousOrFirst().pageNumber}" aria-label="Předchozí">
                                     <span aria-hidden="true">&laquo;</span>
-                                    <span class="sr-only">Previous</span>
+                                    <span class="sr-only">Předchozí</span>
                                 </a>
                             </li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                            </li>
+                            <c:forEach begin="${pageRequest.first().pageNumber}" end="${totalPages - 1}" var="position">
+                                <li class="page-item ${pageRequest.pageNumber == position ? 'active' : ''}">
+                                    <a class="page-link" href="/ib/account/${account.id}?page=${position}">${position + 1}</a>
+                                </li>
+                            </c:forEach>
+                            <c:if test="${pageRequest.next().pageNumber <= (totalPages - 1)}">
+                                <li class="page-item">
+                                    <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.next().pageNumber}" aria-label="Další">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Další</span>
+                                    </a>
+                                </li>
+                            </c:if>
                         </ul>
                     </nav>
                 </div>

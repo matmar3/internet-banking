@@ -5,6 +5,8 @@ import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -20,7 +22,7 @@ public interface AuthorizedAccountManager {
 
     Account findAccountById(int id);
 
-    List<Transaction> findAllTransactionsByAccount(Account account);
+    Page<Transaction> findAllTransactionsByAccount(Account account, Pageable pageable);
 
     Transaction performTransaction(TransactionDto transaction);
 

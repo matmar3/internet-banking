@@ -10,13 +10,14 @@ import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
 import org.hibernate.ObjectNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Date: 26.12.2018
@@ -83,12 +84,12 @@ public class DefaultAccountManager implements AccountManager {
         }
 
         @Override
-        public List<Transaction> findAllTransactionsByAccount(Account account) {
+        public Page<Transaction> findAllTransactionsByAccount(Account account, Pageable pageable) {
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(account.getUser().getId())) {
                 throw new AccessDeniedException("Cannot show other user's accounts");
             }
 
-            return transactionDao.findAllByAccount(account);
+            return transactionDao.findAllByAccount(account, pageable);
         }
 
         @Override

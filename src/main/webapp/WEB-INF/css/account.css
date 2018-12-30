@@ -6,3 +6,11 @@
 .row-link:hover {
     cursor: pointer;
 }
+
+.transaction-cost {
+    color: #E50000;
+}
+
+.transaction-profit {
+    color: #329932;
+}

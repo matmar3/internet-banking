@@ -4,21 +4,22 @@ import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.UserDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
+import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
 import cz.zcu.kiv.pia.martinm.internetbanking.service.*;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Date: 27.12.2018
@@ -66,25 +67,27 @@ public class InternetBankingController extends GenericController {
     }
 
     @RequestMapping("/account/{id}")
-    public ModelAndView showTransactionsRelatedToAuthorizedUser(@PathVariable Integer id) {
-        User user = userManager.getCurrentUser();
-
-        ModelAndView mav = new ModelAndView("ib/transaction_history");
-        mav.addObject("authorizedUser", user);
-
-        AuthorizedAccountManager aam = accountManager.authorize(user);
+    public String showTransactionsRelatedToAuthorizedUser(Model model, @PathVariable Integer id, Pageable pageable) {
         Account account;
+        User user = userManager.getCurrentUser();
+        AuthorizedAccountManager aam = accountManager.authorize(user);
+
+        model.addAttribute("authorizedUser", user);
 
         try {
             account = aam.findAccountById(id);
-            mav.addObject("account", account);
-            mav.addObject("transactions", aam.findAllTransactionsByAccount(account));
+            model.addAttribute("account", account);
+
+            Page<Transaction> transactions = aam.findAllTransactionsByAccount(account, pageable);
+            model.addAttribute("totalPages", transactions.getTotalPages());
+            model.addAttribute("transactions", transactions.get().collect(Collectors.toList()));
+            model.addAttribute("pageRequest", pageable);
         } catch (Exception e) {
             e.printStackTrace();
-            mav.addObject("message", new MessageContainer(MessageContainer.Type.DANGER, e.getMessage()));
+            model.addAttribute("message", new MessageContainer(MessageContainer.Type.DANGER, e.getMessage()));
         }
 
-        return mav;
+        return "ib/transaction_history";
     }
 
     @RequestMapping("/create-transaction")
