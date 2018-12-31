@@ -16,6 +16,17 @@
                 <div class="row justify-content-center">
                     <form:form class="col-lg-10 col-12 align-self-center" action="/ib/create-transaction" method="post" modelAttribute="newTransaction" >
                         <div class="form-row">
+                            <div class="form-group col-12">
+                                <div class="form-group">
+                                    <label for="transactionTemplate">Použít šablonu:</label>
+                                    <select id="transactionTemplate">
+                                        <option value="">--</option>
+                                        <c:forEach var="template" items="${templates}">
+                                            <option value="${template.id}">${template.templateName}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="form-group col-md-5 col-12">
                                 <div class="h3">Nastavení převodu</div>
                                 <div class="form-group">
@@ -55,7 +66,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-12 text-center mt-sm-5">
-                                <input type="submit" class="btn btn-primary" value="Provést platbu"/>
+                                <button type="submit" class="btn btn-primary">Provést platbu</button>
                             </div>
                         </div>
                     </form:form>
@@ -66,6 +77,6 @@
     </layout:put>
 
     <layout:put block="scripts">
-
+        <script src="${rootPath}js/async_templates.js"></script>
     </layout:put>
 </layout:extends>

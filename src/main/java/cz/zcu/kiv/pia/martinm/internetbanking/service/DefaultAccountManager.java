@@ -6,8 +6,10 @@ import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.AccountDao;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.TransactionDao;
+import cz.zcu.kiv.pia.martinm.internetbanking.dao.TransactionTemplateDao;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
+import cz.zcu.kiv.pia.martinm.internetbanking.domain.TransactionTemplate;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Date: 26.12.2018
@@ -31,9 +34,12 @@ public class DefaultAccountManager implements AccountManager {
 
     private TransactionDao transactionDao;
 
-    public DefaultAccountManager(AccountDao accountDao, TransactionDao transactionDao) {
+    private TransactionTemplateDao transactionTemplateDao;
+
+    public DefaultAccountManager(AccountDao accountDao, TransactionDao transactionDao, TransactionTemplateDao transactionTemplateDao) {
         this.accountDao = accountDao;
         this.transactionDao = transactionDao;
+        this.transactionTemplateDao = transactionTemplateDao;
     }
 
     @Override
@@ -128,8 +134,6 @@ public class DefaultAccountManager implements AccountManager {
                     transactionDto.getMessage()
             );
 
-            // TODO validace transake v Controlleru jeste pred timto vsim
-
             return updateEntities(sender, transactionDto.getSentAmount(), receiver, receivedAmount, newTransaction);
         }
 
@@ -146,6 +150,46 @@ public class DefaultAccountManager implements AccountManager {
             }
 
             return transaction;
+        }
+
+        @Override
+        public TransactionTemplate createTemplate(TransactionDto newTemplate, User user) {
+            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(user.getId())) {
+                throw new AccessDeniedException("Cannot creates template for other users");
+            }
+
+            TransactionTemplate template = new TransactionTemplate(
+                    String.format("Template%1$04d", transactionTemplateDao.count()),
+                    newTemplate.getReceiverAccountNumber(),
+                    newTemplate.getSentAmount(),
+                    newTemplate.getSenderAccountNumber(),
+                    newTemplate.getDueDate(),
+                    newTemplate.getConstantSymbol(),
+                    newTemplate.getVariableSymbol(),
+                    newTemplate.getSpecificSymbol(),
+                    newTemplate.getMessage(),
+                    user
+            );
+
+            return transactionTemplateDao.save(template);
+        }
+
+        @Override
+        public List<TransactionTemplate> findAllTransactionTemplatesByUser(User user) {
+            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(user.getId())) {
+                throw new AccessDeniedException("Cannot show other user's transaction templates");
+            }
+
+            return transactionTemplateDao.findAllByOwner(user);
+        }
+
+        @Override
+        public TransactionTemplate findTransactionTemplateById(User user, Integer id) {
+            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(user.getId())) {
+                throw new AccessDeniedException("Cannot show other user's transaction templates");
+            }
+
+            return transactionTemplateDao.findByOwnerAndId(user, id);
         }
 
         @Override

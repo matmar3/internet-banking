@@ -10,6 +10,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/ib/create-transaction">Jednorázové platby</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/ib/templates">Šablony plateb</a>
+                </li>
             </ul>
             <ul class="nav">
                 <li class="nav-item dropdown">

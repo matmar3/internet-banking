@@ -13,25 +13,19 @@
 
         <div class="container-fluid lb-content-wrapper">
             <div class="container">
-                <!--<div class="row">
-                    <form id="filter-transactions-form" class="col-12 mb-sm-3">
-                        <div class="form-group">
-                            <div class="form-inline">
-                                <div class="form-group mr-sm-3">
-                                    <label for="date_from">Od:&nbsp;</label>
-                                    <input type="text" class="form-control form-control-sm" id="date_from">
-                                </div>
-                                <div class="form-group mr-sm-3">
-                                    <label for="date_to">Do:&nbsp;</label>
-                                    <input type="text" class="form-control form-control-sm" id="date_to">
-                                </div>
-                            </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="h3">Informace o účtu</div>
+                        <div class="row">
+                            <dt class="col-md-2">Číslo účtu</dt>
+                            <dd class="col-md-10">${account.accountNumber}</dd>
+                            <dt class="col-md-2">Číslo platební karty</dt>
+                            <dd class="col-md-10">${account.cardNumber}</dd>
+                            <dt class="col-md-2">Stav účtu</dt>
+                            <dd class="col-md-10">${account.formatedBalance}</dd>
                         </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-sm">Vyhledat</button>
-                        </div>
-                    </form>
-                </div>-->
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-12">
                         <div class="h3">Transakční historie</div>
@@ -41,6 +35,7 @@
                                     <th>Zaúčtováno</th>
                                     <th>Typ platby</th>
                                     <th>Částka</th>
+                                    <th>Zpráva</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,6 +46,7 @@
                                                 <td>${transaction.createdDate}</td>
                                                 <td>Příchozí částka<br />${transaction.receiverAccountNumber} <- ${transaction.senderAccountNumber}</td>
                                                 <td class="transaction-profit">+ ${transaction.receivedAmount}</td>
+                                                <td>${transaction.message}</td>
                                             </tr>
                                         </c:when>
                                         <c:otherwise>
@@ -58,6 +54,7 @@
                                                 <td>${transaction.createdDate}</td>
                                                 <td>Odchozí částka<br />${transaction.senderAccountNumber} -> ${transaction.receiverAccountNumber}</td>
                                                 <td class="transaction-cost">- ${transaction.sentAmount}</td>
+                                                <td>${transaction.message}</td>
                                             </tr>
                                         </c:otherwise>
                                     </c:choose>
@@ -70,24 +67,38 @@
                     <nav class="col-12">
                         <ul class="pagination justify-content-center">
                             <li class="page-item">
-                                <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.previousOrFirst().pageNumber}" aria-label="Předchozí">
+                                <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.previousOrFirst().pageNumber}&size=${pageRequest.pageSize}" aria-label="Předchozí">
                                     <span aria-hidden="true">&laquo;</span>
                                     <span class="sr-only">Předchozí</span>
                                 </a>
                             </li>
                             <c:forEach begin="${pageRequest.first().pageNumber}" end="${totalPages - 1}" var="position">
                                 <li class="page-item ${pageRequest.pageNumber == position ? 'active' : ''}">
-                                    <a class="page-link" href="/ib/account/${account.id}?page=${position}">${position + 1}</a>
+                                    <a class="page-link" href="/ib/account/${account.id}?page=${position}&size=${pageRequest.pageSize}">${position + 1}</a>
                                 </li>
                             </c:forEach>
                             <c:if test="${pageRequest.next().pageNumber <= (totalPages - 1)}">
                                 <li class="page-item">
-                                    <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.next().pageNumber}" aria-label="Další">
+                                    <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.next().pageNumber}&size=${pageRequest.pageSize}" aria-label="Další">
                                         <span aria-hidden="true">&raquo;</span>
                                         <span class="sr-only">Další</span>
                                     </a>
                                 </li>
                             </c:if>
+                        </ul>
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item ${pageRequest.pageSize == 10 ? 'active' : ''}">
+                                <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.pageNumber}&size=10">10</a>
+                            </li>
+                            <li class="page-item ${pageRequest.pageSize == 20 ? 'active' : ''}">
+                                <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.pageNumber}&size=20">20</a>
+                            </li>
+                            <li class="page-item ${pageRequest.pageSize == 50 ? 'active' : ''}">
+                                <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.pageNumber}&size=50">50</a>
+                            </li>
+                            <li class="page-item ${pageRequest.pageSize == 100 ? 'active' : ''}">
+                                <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.pageNumber}&size=100">100</a>
+                            </li>
                         </ul>
                     </nav>
                 </div>

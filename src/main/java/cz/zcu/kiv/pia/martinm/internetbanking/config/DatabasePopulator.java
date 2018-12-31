@@ -127,6 +127,13 @@ public class DatabasePopulator {
         generateTransaction(authorizedAccountManager1, account1.getAccountNumber(), account2.getAccountNumber(), 43);
         generateTransaction(authorizedAccountManager1, account1.getAccountNumber(), account2.getAccountNumber(), 700);
 
+        TransactionDto transactionTemplate = new TransactionDto();
+        transactionTemplate.setSenderAccountNumber(account1.getAccountNumber());
+        transactionTemplate.setReceiverAccountNumber(account2.getAccountNumber());
+        transactionTemplate.setSentAmount(new BigDecimal(2121));
+
+        authorizedAccountManager1.createTemplate(transactionTemplate, user1);
+
     }
 
     private void generateTransaction(AuthorizedAccountManager aam, String senderAccountNumber, String receiverAccountNumber, int amount) {
