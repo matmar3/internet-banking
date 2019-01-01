@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
+import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionTemplateDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.UserDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
@@ -18,10 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,11 +37,16 @@ public class InternetBankingController extends GenericController {
     private AccountManager accountManager;
     private ModelMapper modelMapper;
 
-    public InternetBankingController(UserManager userManager, AccountManager accountManager, ModelMapper modelMapper) {
+    public InternetBankingController(
+            UserManager userManager,
+            AccountManager accountManager,
+            ModelMapper modelMapper) {
         this.userManager = userManager;
         this.accountManager = accountManager;
         this.modelMapper = modelMapper;
     }
+
+    /* ---------------- ACCOUNT ------------------- */
 
     @RequestMapping({"/", "/index"})
     public String showIBOverview(Model model) {
@@ -71,31 +75,48 @@ public class InternetBankingController extends GenericController {
     }
 
     @RequestMapping("/account/{id}")
-    public String showTransactionsRelatedToAuthorizedUser(Model model, @PathVariable Integer id,
-                                                          @RequestParam(value = "page", defaultValue = "0",required = false) Integer page,
-                                                          @RequestParam(value = "size", defaultValue = "10",required = false) Integer size) {
-        Account account;
-        User user = userManager.getCurrentUser();
-        AuthorizedAccountManager aam = accountManager.authorize(user);
-        Pageable pageable = PageRequest.of(page, size);
+    public String showTransactionsRelatedToAuthorizedUser(
+            Model model, @PathVariable String id,
+            @RequestParam(value = "page", defaultValue = "0", required = false) String page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) String size) {
 
-        model.addAttribute("authorizedUser", user);
+        if (id == null) return "errorPages/404";
+
+        Integer accountId, pageNumber, pageSize;
 
         try {
-            account = aam.findAccountById(id);
-            model.addAttribute("account", account);
-
-            Page<Transaction> transactions = aam.findAllTransactionsByAccount(account, pageable);
-            model.addAttribute("totalPages", transactions.getTotalPages());
-            model.addAttribute("transactions", transactions.get().collect(Collectors.toList()));
-            model.addAttribute("pageRequest", pageable);
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("message", new MessageContainer(MessageContainer.Type.DANGER, e.getMessage()));
+            accountId = new Integer(id);
+        } catch (NumberFormatException e) {
+            return "errorPages/404";
         }
+
+        try {
+            pageNumber = new Integer(page);
+            pageSize = new Integer(size);
+        } catch (NumberFormatException e) {
+            pageNumber = 0;
+            pageSize = 10;
+        }
+
+        User user = userManager.getCurrentUser();
+        AuthorizedAccountManager aam = accountManager.authorize(user);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Account account = aam.findAccountById(accountId);
+
+        if (account == null) return "errorPages/404";
+
+        Page<Transaction> transactions = aam.findAllTransactionsByAccount(account, pageable);
+
+        model.addAttribute("account", account);
+        model.addAttribute("authorizedUser", user);
+        model.addAttribute("totalPages", transactions.getTotalPages());
+        model.addAttribute("transactions", transactions.get().collect(Collectors.toList()));
+        model.addAttribute("pageRequest", pageable);
 
         return "ib/transaction_history";
     }
+
+    /* ---------------- TRANSACTION ------------------- */
 
     @RequestMapping("/create-transaction")
     public String showTransactionForm(Model model) {
@@ -128,6 +149,8 @@ public class InternetBankingController extends GenericController {
         return redirect("/ib/index");
     }
 
+    /* ---------------- USER ------------------- */
+
     @RequestMapping("/profile")
     public String showCurrentUserProfile(Model model) {
         User user = userManager.getCurrentUser();
@@ -153,50 +176,137 @@ public class InternetBankingController extends GenericController {
         return redirect("/ib/index");
     }
 
+    /* ---------------- TEMPLATES ------------------- */
+
     @RequestMapping(value = "/templates")
-    public ModelAndView showAllTemplates() {
+    public String showAllTemplates(Model model) {
         User user = userManager.getCurrentUser();
         AuthorizedAccountManager aam = accountManager.authorize(user);
 
-        ModelAndView mav = new ModelAndView("ib/templates");
-        mav.addObject("authorizedUser", user);
-        mav.addObject("templates", aam.findAllTransactionTemplatesByUser(user));
+        if (!model.containsAttribute("newTemplate")) {
+            model.addAttribute("newTemplate", new TransactionTemplateDto());
+        }
+        model.addAttribute("authorizedUser", user);
+        model.addAttribute("templates", aam.findAllTransactionTemplatesByUser(user));
+        model.addAttribute("accounts", getPossibleAccounts(user.getAccounts()));
 
-        return mav;
+        return "ib/templates";
+    }
+
+    @PostMapping(value = "/templates/create")
+    public String createTransactionTemplateHandler(
+            Model model, @ModelAttribute("newTemplate") TransactionTemplateDto newTemplate, BindingResult result) {
+        User user = userManager.getCurrentUser();
+        AuthorizedAccountManager aam = accountManager.authorize(user);
+
+        if (result.hasErrors()) {
+            model.addAttribute("authorizedUser", user);
+            model.addAttribute("templates", aam.findAllTransactionTemplatesByUser(user));
+            model.addAttribute("accounts", getPossibleAccounts(user.getAccounts()));
+            return "ib/templates";
+        }
+
+        aam.createTemplate(newTemplate, user);
+        return redirect("/ib/templates");
+    }
+
+    @RequestMapping("/templates/{id}")
+    public String modifyTransactionTemplate(Model model, @PathVariable String id) {
+        if (id == null) return "errorPages/400";
+
+        Integer templateId;
+
+        try {
+            templateId = new Integer(id);
+        } catch (NumberFormatException e) {
+            return "errorPages/400";
+        }
+
+        User user = userManager.getCurrentUser();
+        AuthorizedAccountManager aam = accountManager.authorize(user);
+        TransactionTemplate storedTemplate = aam.findTransactionTemplateById(user, templateId);
+
+        if (storedTemplate == null) return "errorPages/400";
+
+        TransactionTemplateDto template = modelMapper.map(storedTemplate, TransactionTemplateDto.class);
+
+        if (!model.containsAttribute("modifyTemplate")) {
+            model.addAttribute("modifyTemplate", template);
+        }
+        model.addAttribute("authorizedUser", user);
+        model.addAttribute("accounts", getPossibleAccounts(user.getAccounts()));
+
+        return "ib/edit_template";
+    }
+
+    @PostMapping(value = "/templates/modify")
+    public String modifyTransactionTemplateHandler(
+            Model model, @ModelAttribute("modifyTemplate") TransactionTemplateDto newTemplate, BindingResult result) {
+        User user = userManager.getCurrentUser();
+        AuthorizedAccountManager aam = accountManager.authorize(user);
+
+        if (result.hasErrors()) {
+            model.addAttribute("authorizedUser", user);
+            model.addAttribute("templates", aam.findAllTransactionTemplatesByUser(user));
+            model.addAttribute("accounts", getPossibleAccounts(user.getAccounts()));
+            return "ib/edit_template";
+        }
+
+        aam.modifyTemplate(newTemplate);
+        return redirect("/ib/templates");
     }
 
     @RequestMapping(value = "/templates/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public String retrieveTransactionTemplate(@PathVariable Integer id) {
+    public String retrieveTransactionTemplate(@PathVariable String id) {
+        if (id == null) return "Invalid identifier";
+
+        Integer templateId;
+
+        try {
+            templateId = new Integer(id);
+        } catch (NumberFormatException e) {
+            return "Invalid identifier";
+        }
+
         User user = userManager.getCurrentUser();
         AuthorizedAccountManager aam = accountManager.authorize(user);
 
-        TransactionTemplate storedTemplate = aam.findTransactionTemplateById(user, id);
+        TransactionTemplate storedTemplate = aam.findTransactionTemplateById(user, templateId);
+
+        if (storedTemplate == null) return "Invalid identifier";
+
+        // Mapping to transaction because of missing templateName in form
         TransactionDto template = modelMapper.map(storedTemplate, TransactionDto.class);
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.writeValueAsString(template);
         } catch (JsonProcessingException e) {
-            return "failed";
+            return "JSON processing failed";
         }
     }
 
-    @RequestMapping(value = "/templates/create", method = RequestMethod.POST, consumes = "application/json")
-    public String createTransactionTemplate(@RequestBody String json) {
+    @RequestMapping("/remove/template/{id}")
+    public String createTransactionTemplate(@PathVariable String id) {
         User user = userManager.getCurrentUser();
         AuthorizedAccountManager aam = accountManager.authorize(user);
 
+        if (id == null) return "errorPages/400";
+
+        Integer templateId;
+
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            TransactionDto newTemplate = objectMapper.readValue(json, TransactionDto.class);
-            aam.createTemplate(newTemplate, user);
-        } catch (IOException e) {
-            return "failed";
+            templateId = new Integer(id);
+        } catch (NumberFormatException e) {
+            return "errorPages/400";
         }
 
-        return "success";
+        aam.removeTemplate(templateId);
+        return redirect("/ib/templates");
     }
+
+    /* ---------------- AUXILIARY METHODS ------------------- */
 
     private Map<String, String> getPossibleAccounts(Set<Account> accounts) {
         TreeMap<String, String> options = new TreeMap<>();

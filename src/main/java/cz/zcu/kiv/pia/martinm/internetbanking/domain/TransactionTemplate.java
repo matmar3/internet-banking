@@ -123,4 +123,40 @@ public class TransactionTemplate implements DataTransferObject<Integer> {
     public User getOwner() {
         return owner;
     }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
+    }
+
+    public void setReceiverAccountNumber(String receiverAccountNumber) {
+        this.receiverAccountNumber = receiverAccountNumber;
+    }
+
+    public void setSentAmount(BigDecimal sentAmount) {
+        this.sentAmount = sentAmount;
+    }
+
+    public void setSenderAccountNumber(String senderAccountNumber) {
+        this.senderAccountNumber = senderAccountNumber;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public void setConstantSymbol(String constantSymbol) {
+        this.constantSymbol = constantSymbol;
+    }
+
+    public void setVariableSymbol(String variableSymbol) {
+        this.variableSymbol = variableSymbol;
+    }
+
+    public void setSpecificSymbol(String specificSymbol) {
+        this.specificSymbol = specificSymbol;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

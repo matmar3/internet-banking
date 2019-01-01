@@ -2,6 +2,7 @@ package cz.zcu.kiv.pia.martinm.internetbanking.service;
 
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
+import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionTemplateDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.TransactionTemplate;
@@ -26,11 +27,15 @@ public interface AuthorizedAccountManager {
 
     Transaction performTransaction(TransactionDto transaction);
 
-    TransactionTemplate createTemplate(TransactionDto newTemplate, User user);
+    TransactionTemplate createTemplate(TransactionTemplateDto newTemplate, User user);
 
     List<TransactionTemplate> findAllTransactionTemplatesByUser(User user);
 
     TransactionTemplate findTransactionTemplateById(User user, Integer id);
+
+    void removeTemplate(Integer id);
+
+    TransactionTemplate modifyTemplate(TransactionTemplateDto modifyTemplate);
 
     String generateAccountNumber();
 

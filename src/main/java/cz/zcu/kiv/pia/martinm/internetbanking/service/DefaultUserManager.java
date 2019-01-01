@@ -1,5 +1,6 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.service;
 
+import cz.zcu.kiv.pia.martinm.internetbanking.RandomNumberGenerator;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.UserDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.UserDao;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
@@ -131,13 +132,6 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
             user.setPassword(encoder.encode(rawPassword));
             userDao.save(user);
 
-            /*try {
-                notificationService.sendWelcome(user, rawPassword)
-            } catch (e) {
-                throw new RuntimeException(
-                        "User has been created but email notification failed for reason: $e", e)
-            }*/
-
             return user;
         }
 
@@ -154,7 +148,7 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
 
         @Override
         public String generatePassword() {
-            return String.format("%04d", userDao.count()); // TODO zapnout RandomNumberGenerator.generate(4);
+            return RandomNumberGenerator.generate(4);
         }
 
         @Override

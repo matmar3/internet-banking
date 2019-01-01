@@ -14,34 +14,9 @@
 
         <div class="container-fluid lb-content-wrapper">
             <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="h3">Šablony plateb</div>
-                        <table class="table table-striped table-sm">
-                            <thead>
-                            <tr>
-                                <th>Název</th>
-                                <th>Detail převodu</th>
-                                <th>Částka</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <c:forEach items="${templates}" var="template">
-                                <tr class="row-link" data-href="/ib/templates/${template.id}">
-                                    <td>${template.templateName}</td>
-                                    <td>${template.senderAccountNumber} -> ${template.receiverAccountNumber}</td>
-                                    <td>${template.sentAmount}</td>
-                                    <td><a href="remove/template/${template.id}" class="badge badge-danger"><i class="fas fa-trash-alt"></i></a></td>
-                                </tr>
-                            </c:forEach>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
                 <div class="row justify-content-center mt-5">
-                    <div class="h3">Vytvořit šablonu</div>
-                    <form:form class="col-lg-10 col-12 align-self-center" action="/ib/templates/create" method="post" modelAttribute="newTemplate" >
+                    <div class="h3">Upravit šablonu</div>
+                    <form:form class="col-lg-10 col-12 align-self-center" action="/ib/templates/modify" method="post" modelAttribute="modifyTemplate" >
                         <div class="form-row">
                             <div class="form-group col-12">
                                 <div class="form-group">
@@ -88,7 +63,8 @@
                                 </div>
                             </div>
                             <div class="form-group col-12 text-center mt-sm-5">
-                                <button type="submit" class="btn btn-primary">Vytvořit šablonu</button>
+                                <form:hidden path="id"/>
+                                <button type="submit" class="btn btn-primary">Upravit šablonu</button>
                             </div>
                         </div>
                     </form:form>
@@ -99,10 +75,6 @@
     </layout:put>
 
     <layout:put block="scripts">
-        <script>
-            $(".row-link").click(function() {
-                window.location = $(this).data("href");
-            });
-        </script>
+
     </layout:put>
 </layout:extends>

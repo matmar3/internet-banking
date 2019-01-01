@@ -2,6 +2,7 @@ package cz.zcu.kiv.pia.martinm.internetbanking.config;
 
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
+import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionTemplateDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.AccountDao;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.UserDao;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
@@ -127,7 +128,8 @@ public class DatabasePopulator {
         generateTransaction(authorizedAccountManager1, account1.getAccountNumber(), account2.getAccountNumber(), 43);
         generateTransaction(authorizedAccountManager1, account1.getAccountNumber(), account2.getAccountNumber(), 700);
 
-        TransactionDto transactionTemplate = new TransactionDto();
+        TransactionTemplateDto transactionTemplate = new TransactionTemplateDto();
+        transactionTemplate.setTemplateName("Testovaci template");
         transactionTemplate.setSenderAccountNumber(account1.getAccountNumber());
         transactionTemplate.setReceiverAccountNumber(account2.getAccountNumber());
         transactionTemplate.setSentAmount(new BigDecimal(2121));
