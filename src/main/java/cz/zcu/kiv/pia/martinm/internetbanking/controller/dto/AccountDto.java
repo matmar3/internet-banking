@@ -1,7 +1,6 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.controller.dto;
 
 import javax.validation.constraints.NotNull;
-import java.util.Currency;
 
 /**
  * Date: 29.12.2018
@@ -11,13 +10,13 @@ import java.util.Currency;
 public class AccountDto {
 
     @NotNull
-    private Currency currency;
+    private String currency;
 
-    public Currency getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 

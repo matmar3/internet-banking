@@ -7,6 +7,7 @@ import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionTemplateDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.UserDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
+import cz.zcu.kiv.pia.martinm.internetbanking.domain.Currency;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.TransactionTemplate;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
@@ -82,7 +83,7 @@ public class InternetBankingController extends GenericController {
 
         if (id == null) return "errorPages/400";
 
-        Integer accountId, pageNumber, pageSize;
+        int accountId, pageNumber, pageSize;
 
         try {
             accountId = new Integer(id);
@@ -316,13 +317,10 @@ public class InternetBankingController extends GenericController {
     }
 
     private Map<String, String> getPossibleCurrencies() {
-        LinkedList<Currency> currencies = new LinkedList<>(Currency.getAvailableCurrencies());
-        currencies.sort(Comparator.comparing(Currency::getCurrencyCode));
-
         TreeMap<String, String> options = new TreeMap<>();
         options.put("", "--");
-        for (Currency c: currencies) {
-            options.put(c.getCurrencyCode(), c.getCurrencyCode());
+        for (Currency c: Currency.values()) {
+            options.put(c.name(), c.name());
         }
 
         return options;

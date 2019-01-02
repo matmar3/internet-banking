@@ -82,7 +82,7 @@ public class DefaultAccountManager implements AccountManager {
             String cardNumber = generateCardNumber();
             String accountNumber = generateAccountNumber();
             return accountDao.save(new Account(
-               newAccount.getCurrency().getCurrencyCode(),
+               newAccount.getCurrency(),
                accountNumber,
                cardNumber,
                owner
