@@ -14,6 +14,7 @@ import java.util.Date;
 public class TransactionDto {
 
     @NotEmpty
+    @Pattern(regexp = "^(([0-9]{6})-)?([0-9]{10})(/[0-9]{4})$", message = "Invalid account number format")
     private String receiverAccountNumber;
 
     @NotNull
@@ -21,7 +22,6 @@ public class TransactionDto {
     private BigDecimal sentAmount;
 
     @NotEmpty
-    @Size(min = 15, max = 22)
     private String senderAccountNumber;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="form-group">
                                     <form:label path="receiverAccountNumber">Účet příjemce: *</form:label><form:errors class="formError" path='receiverAccountNumber' />
-                                    <form:input type="text" class="form-control" path="receiverAccountNumber" required="required" minlength="15" maxlength="22" />
+                                    <form:input type="text" class="form-control" path="receiverAccountNumber" required="required" pattern="^(([0-9]{6})-)?([0-9]{10})(/[0-9]{4})$" />
                                 </div>
                                 <div class="form-group">
                                     <form:label path="sentAmount">Částka: *</form:label><form:errors class="formError" path='sentAmount' />

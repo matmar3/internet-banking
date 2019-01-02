@@ -2,10 +2,7 @@ package cz.zcu.kiv.pia.martinm.internetbanking.controller.dto;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -22,6 +19,7 @@ public class TransactionTemplateDto {
     private String templateName;
 
     @NotEmpty
+    @Pattern(regexp = "^(([0-9]{6})-)?([0-9]{10})(/[0-9]{4})$", message = "Invalid account number format")
     private String receiverAccountNumber;
 
     @NotNull
@@ -29,7 +27,6 @@ public class TransactionTemplateDto {
     private BigDecimal sentAmount;
 
     @NotEmpty
-    @Size(min = 15, max = 22)
     private String senderAccountNumber;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
