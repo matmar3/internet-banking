@@ -138,13 +138,13 @@ public class InternetBankingController extends GenericController {
         User user = userManager.getCurrentUser();
         AuthorizedAccountManager aam = accountManager.authorize(user);
 
-        if (result.hasErrors()) {
+        if (result.hasErrors() || !aam.isTransactionValid(newTransaction, result)) {
             model.addAttribute("authorizedUser", user);
             model.addAttribute("templates", aam.findAllTransactionTemplatesByUser(user));
             model.addAttribute("accounts", getPossibleAccounts(user.getAccounts()));
             return "ib/create_transaction";
         }
-        // TODO kontrola - že má peníze, že neposila peniza na stejny ucet, ze je neposila z jineho uctu nez jeho
+
         aam.performTransaction(newTransaction);
         return redirect("/ib/index");
     }

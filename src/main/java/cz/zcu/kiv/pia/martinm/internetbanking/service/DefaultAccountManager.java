@@ -16,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -137,6 +139,27 @@ public class DefaultAccountManager implements AccountManager {
             );
 
             return updateEntities(sender, transactionDto.getSentAmount(), receiver, receivedAmount, newTransaction);
+        }
+
+        @Override
+        public boolean isTransactionValid(TransactionDto transaction, BindingResult result) {
+            Account sender = accountDao.findByAccountNumber(transaction.getSenderAccountNumber());
+            boolean valid = true;
+
+            if (transaction.getSenderAccountNumber().equals(transaction.getReceiverAccountNumber())) {
+                result.addError(new FieldError("newTransaction", "receiverAccountNumber", "Receiver cannot be the same account as sender."));
+                valid = false;
+            }
+
+            if (sender.getBalance().compareTo(transaction.getSentAmount()) < 0) {
+                result.addError(new FieldError("newTransaction", "sentAmount", "Sender does not have enough money."));
+                valid = false;
+            }
+
+            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !sender.getUser().getId().equals(currentUser.getId()))
+                throw new AccessDeniedException("Cannot send transaction from other user's account");
+
+            return valid;
         }
 
         private Transaction updateEntities(Account sender, BigDecimal sentAmount, Account receiver, BigDecimal receivedAmount, Transaction transaction) {

@@ -9,6 +9,7 @@ import cz.zcu.kiv.pia.martinm.internetbanking.domain.TransactionTemplate;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
@@ -23,9 +24,15 @@ public interface AuthorizedAccountManager {
 
     Account findAccountById(int id);
 
+
+
     Page<Transaction> findAllTransactionsByAccount(Account account, Pageable pageable);
 
     Transaction performTransaction(TransactionDto transaction);
+
+    boolean isTransactionValid(TransactionDto transaction, BindingResult result);
+
+
 
     TransactionTemplate createTemplate(TransactionTemplateDto newTemplate, User user);
 
@@ -36,6 +43,8 @@ public interface AuthorizedAccountManager {
     void removeTemplate(Integer id);
 
     TransactionTemplate modifyTemplate(TransactionTemplateDto modifyTemplate);
+
+
 
     String generateAccountNumber();
 
