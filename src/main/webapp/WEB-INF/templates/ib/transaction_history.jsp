@@ -39,69 +39,80 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:forEach items="${transactions}" var="transaction">
-                                    <c:choose>
-                                        <c:when test="${account.accountNumber == transaction.receiverAccountNumber}">
-                                            <tr>
-                                                <td>${transaction.createdDate}</td>
-                                                <td>Příchozí částka<br />${transaction.receiverAccountNumber} <- ${transaction.senderAccountNumber}</td>
-                                                <td class="transaction-profit">+ ${transaction.receivedAmount}</td>
-                                                <td>${transaction.message}</td>
-                                            </tr>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <tr>
-                                                <td>${transaction.createdDate}</td>
-                                                <td>Odchozí částka<br />${transaction.senderAccountNumber} -> ${transaction.receiverAccountNumber}</td>
-                                                <td class="transaction-cost">- ${transaction.sentAmount}</td>
-                                                <td>${transaction.message}</td>
-                                            </tr>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:forEach>
+                                <c:choose>
+                                    <c:when test="${not empty transactions}">
+                                        <c:forEach items="${transactions}" var="transaction">
+                                            <c:choose>
+                                                <c:when test="${account.accountNumber == transaction.receiverAccountNumber}">
+                                                    <tr>
+                                                        <td>${transaction.createdDate}</td>
+                                                        <td>Příchozí částka<br />${transaction.receiverAccountNumber} <- ${transaction.senderAccountNumber}</td>
+                                                        <td class="transaction-profit">+ ${transaction.receivedAmount}</td>
+                                                        <td>${transaction.message}</td>
+                                                    </tr>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <tr>
+                                                        <td>${transaction.createdDate}</td>
+                                                        <td>Odchozí částka<br />${transaction.senderAccountNumber} -> ${transaction.receiverAccountNumber}</td>
+                                                        <td class="transaction-cost">- ${transaction.sentAmount}</td>
+                                                        <td>${transaction.message}</td>
+                                                    </tr>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <tr>
+                                            <td colspan="4">No transactions has been made.</td>
+                                        </tr>
+                                    </c:otherwise>
+                                </c:choose>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="row">
-                    <nav class="col-12">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item">
-                                <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.previousOrFirst().pageNumber}&size=${pageRequest.pageSize}" aria-label="Předchozí">
-                                    <span aria-hidden="true">&laquo;</span>
-                                    <span class="sr-only">Předchozí</span>
-                                </a>
-                            </li>
-                            <c:forEach begin="${pageRequest.first().pageNumber}" end="${totalPages - 1}" var="position">
-                                <li class="page-item ${pageRequest.pageNumber == position ? 'active' : ''}">
-                                    <a class="page-link" href="/ib/account/${account.id}?page=${position}&size=${pageRequest.pageSize}">${position + 1}</a>
-                                </li>
-                            </c:forEach>
-                            <c:if test="${pageRequest.next().pageNumber <= (totalPages - 1)}">
+                <c:if test="${not empty transactions}">
+                    <div class="row">
+                        <nav class="col-12">
+                            <ul class="pagination justify-content-center">
                                 <li class="page-item">
-                                    <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.next().pageNumber}&size=${pageRequest.pageSize}" aria-label="Další">
-                                        <span aria-hidden="true">&raquo;</span>
-                                        <span class="sr-only">Další</span>
+                                    <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.previousOrFirst().pageNumber}&size=${pageRequest.pageSize}" aria-label="Předchozí">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Předchozí</span>
                                     </a>
                                 </li>
-                            </c:if>
-                        </ul>
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item ${pageRequest.pageSize == 10 ? 'active' : ''}">
-                                <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.pageNumber}&size=10">10</a>
-                            </li>
-                            <li class="page-item ${pageRequest.pageSize == 20 ? 'active' : ''}">
-                                <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.pageNumber}&size=20">20</a>
-                            </li>
-                            <li class="page-item ${pageRequest.pageSize == 50 ? 'active' : ''}">
-                                <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.pageNumber}&size=50">50</a>
-                            </li>
-                            <li class="page-item ${pageRequest.pageSize == 100 ? 'active' : ''}">
-                                <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.pageNumber}&size=100">100</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+                                <c:forEach begin="${pageRequest.first().pageNumber}" end="${totalPages - 1}" var="position">
+                                    <li class="page-item ${pageRequest.pageNumber == position ? 'active' : ''}">
+                                        <a class="page-link" href="/ib/account/${account.id}?page=${position}&size=${pageRequest.pageSize}">${position + 1}</a>
+                                    </li>
+                                </c:forEach>
+                                <c:if test="${pageRequest.next().pageNumber <= (totalPages - 1)}">
+                                    <li class="page-item">
+                                        <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.next().pageNumber}&size=${pageRequest.pageSize}" aria-label="Další">
+                                            <span aria-hidden="true">&raquo;</span>
+                                            <span class="sr-only">Další</span>
+                                        </a>
+                                    </li>
+                                </c:if>
+                            </ul>
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item ${pageRequest.pageSize == 10 ? 'active' : ''}">
+                                    <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.pageNumber}&size=10">10</a>
+                                </li>
+                                <li class="page-item ${pageRequest.pageSize == 20 ? 'active' : ''}">
+                                    <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.pageNumber}&size=20">20</a>
+                                </li>
+                                <li class="page-item ${pageRequest.pageSize == 50 ? 'active' : ''}">
+                                    <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.pageNumber}&size=50">50</a>
+                                </li>
+                                <li class="page-item ${pageRequest.pageSize == 100 ? 'active' : ''}">
+                                    <a class="page-link" href="/ib/account/${account.id}?page=${pageRequest.pageNumber}&size=100">100</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </c:if>
             </div>
         </div>
 

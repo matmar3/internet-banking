@@ -104,6 +104,12 @@ public class InternetBankingController extends GenericController {
         Account account = aam.findAccountById(accountId);
         Page<Transaction> transactions = aam.findAllTransactionsByAccount(account, pageable);
 
+        if (pageNumber >= transactions.getTotalPages() && transactions.getTotalPages() > 0) {
+            pageable = PageRequest.of(transactions.getTotalPages() - 1, pageSize);
+            account = aam.findAccountById(accountId);
+            transactions = aam.findAllTransactionsByAccount(account, pageable);
+        }
+
         model.addAttribute("account", account);
         model.addAttribute("authorizedUser", user);
         model.addAttribute("totalPages", transactions.getTotalPages());
