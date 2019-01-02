@@ -12,6 +12,7 @@ import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.TransactionTemplate;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -38,10 +39,17 @@ public class DefaultAccountManager implements AccountManager {
 
     private TransactionTemplateDao transactionTemplateDao;
 
-    public DefaultAccountManager(AccountDao accountDao, TransactionDao transactionDao, TransactionTemplateDao transactionTemplateDao) {
+    private MessageProvider messageProvider;
+
+    public DefaultAccountManager(
+            AccountDao accountDao,
+            TransactionDao transactionDao,
+            TransactionTemplateDao transactionTemplateDao,
+            MessageProvider messageProvider) {
         this.accountDao = accountDao;
         this.transactionDao = transactionDao;
         this.transactionTemplateDao = transactionTemplateDao;
+        this.messageProvider = messageProvider;
     }
 
     @Override
@@ -64,7 +72,7 @@ public class DefaultAccountManager implements AccountManager {
         @Override
         public Account createAccount(AccountDto newAccount, User owner) {
             if (owner.getRole().equals(User.Role.ADMIN.name())) {
-                throw new AccessDeniedException("Admin cannot have an account");
+                throw new AccessDeniedException(messageProvider.getMessage("error.permissionDenied.adminAcc"));
             }
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !owner.getId().equals(currentUser.getId())) {
                 throw new AccessDeniedException("Cannot create account for other user");

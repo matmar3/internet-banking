@@ -73,6 +73,7 @@ public class AdministrationController extends GenericController {
         if (result.hasErrors() || !turingTestResult) {
             if (!turingTestResult) result.addError(new FieldError("newUser", "turingTestAnswer", "Wrong answer"));
             newUser.setTuringTestId(null);
+
             model.addAttribute("turingTest", turingTestProvider.generateRandomTest());
             model.addAttribute("authorizedUser", u);
             return "admin/create_user";

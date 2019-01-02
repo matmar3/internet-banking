@@ -2,7 +2,6 @@ package cz.zcu.kiv.pia.martinm.internetbanking.controller;
 
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.http.HttpServletRequest;
 

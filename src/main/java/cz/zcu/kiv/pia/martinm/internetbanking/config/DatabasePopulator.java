@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
-import java.util.Currency;
 
 /**
  * Date: 29.12.2018
