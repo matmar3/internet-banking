@@ -38,6 +38,7 @@
                     </div>
                     <div class="col-lg-5 col-md-6 col-12">
                         <form:form class="col-12 align-self-center" action="/ib/create-account" method="post" modelAttribute="newAccount">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <div class="form-row">
                                 <div class="form-group col-12">
                                     <div class="h3">Založit nový účet</div>

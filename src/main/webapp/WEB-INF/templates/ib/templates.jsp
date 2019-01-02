@@ -42,6 +42,7 @@
                 <div class="row justify-content-center mt-5">
                     <div class="h3">Vytvořit šablonu</div>
                     <form:form class="col-lg-10 col-12 align-self-center" action="/ib/templates/create" method="post" modelAttribute="newTemplate" >
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <div class="form-row">
                             <div class="form-group col-12">
                                 <div class="form-group">

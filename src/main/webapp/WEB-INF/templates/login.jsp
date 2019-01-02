@@ -11,6 +11,7 @@
         <div class="container-fluid">
             <div class="row login-wrapper lb-content-wrapper justify-content-center">
                 <form class="col-lg-3 col-md-6 col-12 align-self-center" action="/login-process" method="post" id="account-login-form">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <div class="form-group">
                         <label for="UID">Identifikační číslo:</label>
                         <div class="input-group">

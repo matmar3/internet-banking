@@ -17,10 +17,12 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="/admin/profile"><i class="fas fa-cog"></i> Nastavení</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/logout">Odhlásit se <i class="fas fa-sign-out-alt"></i></a>
+                        <a class="dropdown-item" href="javascript:logout()">Odhlásit se <i class="fas fa-sign-out-alt"></i></a>
                     </div>
                 </li>
             </ul>
         </div>
     </nav>
 </div>
+
+<jsp:include page="../logout_form.jsp" />

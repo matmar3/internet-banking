@@ -5,6 +5,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <form:form class="col-lg-10 col-12 align-self-center" action="${modifyUserActionUrl}" method="post" modelAttribute="modifiedUser" >
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <div class="form-row">
                     <div class="form-group col-md-5 col-12">
                         <div class="h3">Osobní údaje</div>

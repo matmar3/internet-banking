@@ -15,6 +15,7 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <form:form class="col-lg-10 col-12 align-self-center" action="/ib/create-transaction" method="post" modelAttribute="newTransaction" >
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <div class="form-row">
                             <div class="form-group col-12">
                                 <div class="form-group">
@@ -77,6 +78,6 @@
     </layout:put>
 
     <layout:put block="scripts">
-        <script src="${rootPath}js/async_templates.js"></script>
+        <script src="/js/async_templates.js"></script>
     </layout:put>
 </layout:extends>

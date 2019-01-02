@@ -15,7 +15,8 @@
         <div class="container-fluid lb-content-wrapper">
             <div class="container">
                 <div class="row justify-content-center">
-                    <form:form class="col-lg-10 col-12 align-self-center" action="/admin/create-user" method="post" modelAttribute="newUser" id="account-registration-form">
+                    <form:form class="col-lg-10 col-12 align-self-center" action="/admin/create-user" method="post" modelAttribute="newUser">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <div class="form-row">
                             <div class="form-group col-md-5 col-12">
                                 <div class="h3">Osobní údaje</div>

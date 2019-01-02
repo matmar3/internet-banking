@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://kwonnam.pe.kr/jsp/template-inheritance" prefix="layout"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <layout:extends name="base.jsp">
     <layout:put block="styles">
@@ -27,7 +28,7 @@
                     </ul>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="/login">Internetové bankovnictví</a>
+                            <a class="nav-link" href="/login"><spring:message code="homepage.nav.ib" /></a>
                         </li>
                     </ul>
                 </div>
@@ -35,14 +36,14 @@
         </div>
 
         <main id="main-trap">
-            <img src="/images/article.jpeg" alt="Reklama">
+            <img src="/images/article.jpeg" alt="Ad">
         </main>
 
         <div class="container">
             <div class="row frequent-services justify-content-between">
                 <div class="custom-col-md-35 col-12">
-                    <div class="block-section-title text-center">Osobní účet zdarma</div>
-                    <div class="block-section-content"></div>
+                    <div class="block-section-title text-center"><spring:message code="homepage.services.freeAccount" /></div>
+                    <div class="block-section-content"><spring:message code="homepage.services.freeAccount.content" /></div>
                 </div>
                 <div class="custom-col-md-35 col-12">
                     <div class="block-section-title text-center">Kurzovní lístek</div>
