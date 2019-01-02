@@ -222,6 +222,7 @@ public class DefaultAccountManager implements AccountManager {
             TransactionTemplate template = transactionTemplateDao.findById(id).orElse(null);
 
             if (template == null) {
+                // TODO 404 ?
                 throw new AccessDeniedException("Cannot remove not existing template");
             }
 

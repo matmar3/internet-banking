@@ -80,14 +80,14 @@ public class InternetBankingController extends GenericController {
             @RequestParam(value = "page", defaultValue = "0", required = false) String page,
             @RequestParam(value = "size", defaultValue = "10", required = false) String size) {
 
-        if (id == null) return "errorPages/404";
+        if (id == null) return "errorPages/400";
 
         Integer accountId, pageNumber, pageSize;
 
         try {
             accountId = new Integer(id);
         } catch (NumberFormatException e) {
-            return "errorPages/404";
+            return "errorPages/400";
         }
 
         try {
@@ -103,7 +103,7 @@ public class InternetBankingController extends GenericController {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Account account = aam.findAccountById(accountId);
 
-        if (account == null) return "errorPages/404";
+        if (account == null) return "errorPages/400";
 
         Page<Transaction> transactions = aam.findAllTransactionsByAccount(account, pageable);
 
@@ -259,14 +259,14 @@ public class InternetBankingController extends GenericController {
     @RequestMapping(value = "/templates/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String retrieveTransactionTemplate(@PathVariable String id) {
-        if (id == null) return "Invalid identifier";
+        if (id == null) return "Bad request";
 
         Integer templateId;
 
         try {
             templateId = new Integer(id);
         } catch (NumberFormatException e) {
-            return "Invalid identifier";
+            return "Bad request";
         }
 
         User user = userManager.getCurrentUser();
@@ -274,7 +274,7 @@ public class InternetBankingController extends GenericController {
 
         TransactionTemplate storedTemplate = aam.findTransactionTemplateById(user, templateId);
 
-        if (storedTemplate == null) return "Invalid identifier";
+        if (storedTemplate == null) return "Bad request";
 
         // Mapping to transaction because of missing templateName in form
         TransactionDto template = modelMapper.map(storedTemplate, TransactionDto.class);
