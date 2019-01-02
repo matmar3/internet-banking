@@ -102,9 +102,6 @@ public class InternetBankingController extends GenericController {
         AuthorizedAccountManager aam = accountManager.authorize(user);
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Account account = aam.findAccountById(accountId);
-
-        if (account == null) return "errorPages/400";
-
         Page<Transaction> transactions = aam.findAllTransactionsByAccount(account, pageable);
 
         model.addAttribute("account", account);
@@ -225,9 +222,6 @@ public class InternetBankingController extends GenericController {
         User user = userManager.getCurrentUser();
         AuthorizedAccountManager aam = accountManager.authorize(user);
         TransactionTemplate storedTemplate = aam.findTransactionTemplateById(user, templateId);
-
-        if (storedTemplate == null) return "errorPages/400";
-
         TransactionTemplateDto template = modelMapper.map(storedTemplate, TransactionTemplateDto.class);
 
         if (!model.containsAttribute("modifyTemplate")) {
@@ -273,9 +267,6 @@ public class InternetBankingController extends GenericController {
         AuthorizedAccountManager aam = accountManager.authorize(user);
 
         TransactionTemplate storedTemplate = aam.findTransactionTemplateById(user, templateId);
-
-        if (storedTemplate == null) return "Bad request";
-
         // Mapping to transaction because of missing templateName in form
         TransactionDto template = modelMapper.map(storedTemplate, TransactionDto.class);
 

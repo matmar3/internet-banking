@@ -85,9 +85,20 @@ public class AdministrationController extends GenericController {
     }
 
     @RequestMapping("/remove/user/{id}")
-    public String removeUserHandler(HttpServletRequest request, @PathVariable Integer id) {
+    public String removeUserHandler(HttpServletRequest request, @PathVariable String id) {
         AuthorizedUserManager aum = userManager.authorize(userManager.getCurrentUser());
-        aum.remove(id);
+
+        if (id == null) return "errorPages/400";
+
+        Integer userId;
+
+        try {
+            userId = new Integer(id);
+        } catch (NumberFormatException e) {
+            return "errorPages/400";
+        }
+
+        aum.remove(userId);
 
         return redirectBack(request);
     }

@@ -1,5 +1,6 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.controller;
 
+import cz.zcu.kiv.pia.martinm.internetbanking.EntityNotFoundException;
 import org.hibernate.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -36,6 +37,7 @@ public class ExceptionController {
             MethodArgumentNotValidException.class,
             HttpMessageNotReadableException.class,
             TypeMismatchException.class,
+            EntityNotFoundException.class,
             AccessDeniedException.class,
             BindException.class,
     })

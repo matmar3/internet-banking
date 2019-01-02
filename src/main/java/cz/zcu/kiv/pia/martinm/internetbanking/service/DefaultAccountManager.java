@@ -1,6 +1,7 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.service;
 
 import cz.zcu.kiv.pia.martinm.internetbanking.Bank;
+import cz.zcu.kiv.pia.martinm.internetbanking.EntityNotFoundException;
 import cz.zcu.kiv.pia.martinm.internetbanking.RandomNumberGenerator;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
@@ -92,7 +93,9 @@ public class DefaultAccountManager implements AccountManager {
         public Account findAccountById(int id) {
             Account account = accountDao.findById(id).orElse(null);
 
-            if (account == null) return null;
+            if (account == null) {
+                throw new EntityNotFoundException("Account with given ID not exists.");
+            }
 
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(account.getUser().getId())) {
                 throw new AccessDeniedException("Cannot show other user's account");
@@ -222,7 +225,12 @@ public class DefaultAccountManager implements AccountManager {
                 throw new AccessDeniedException("Cannot show other user's transaction templates");
             }
 
-            return transactionTemplateDao.findByOwnerAndId(user, id);
+            TransactionTemplate template = transactionTemplateDao.findByOwnerAndId(user, id);
+            if (template == null) {
+                throw new EntityNotFoundException("Transaction template with given ID and owner not exists.");
+            }
+
+            return template;
         }
 
         @Override
@@ -230,8 +238,7 @@ public class DefaultAccountManager implements AccountManager {
             TransactionTemplate template = transactionTemplateDao.findById(id).orElse(null);
 
             if (template == null) {
-                // TODO 404 ?
-                throw new AccessDeniedException("Cannot remove not existing template");
+                throw new EntityNotFoundException("Transaction template with given ID not exists.");
             }
 
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(template.getOwner().getId())) {

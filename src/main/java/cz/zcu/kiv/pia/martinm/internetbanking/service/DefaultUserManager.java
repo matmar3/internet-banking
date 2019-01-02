@@ -1,5 +1,6 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.service;
 
+import cz.zcu.kiv.pia.martinm.internetbanking.EntityNotFoundException;
 import cz.zcu.kiv.pia.martinm.internetbanking.RandomNumberGenerator;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.UserDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.UserDao;
@@ -73,7 +74,7 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
 
             User user = userDao.findById(id).orElse(null);
             if (user == null) {
-                throw new RuntimeException("User not exists."); // TODO UserNotFOundException
+                throw new EntityNotFoundException("User not exists.");
             }
 
             if (user.getRole().equals(User.Role.ADMIN.name())) {
