@@ -3,7 +3,7 @@
 
 <layout:extends name="base.jsp">
     <layout:put block="styles">
-        <link rel="stylesheet" href="css/homepage.css">
+        <link rel="stylesheet" href="/css/homepage.css">
     </layout:put>
 
     <layout:put block="content">
@@ -35,7 +35,7 @@
         </div>
 
         <main id="main-trap">
-            <img src="images/article.jpeg" alt="Reklama">
+            <img src="/images/article.jpeg" alt="Reklama">
         </main>
 
         <div class="container">

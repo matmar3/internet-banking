@@ -26,9 +26,4 @@ public class GenericController {
         return "redirect:" + page;
     }
 
-    @ModelAttribute("rootPath")
-    public String fillRootPathAttribute(HttpServletRequest request) {
-        return "http://" + request.getLocalName() + ":" + request.getLocalPort() + "/";
-    }
-
 }

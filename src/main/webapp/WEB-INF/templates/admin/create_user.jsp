@@ -5,7 +5,7 @@
 
 <layout:extends name="../base.jsp">
     <layout:put block="styles">
-        <link rel="stylesheet" href="../css/registration.css">
+        <link rel="stylesheet" href="/css/registration.css">
     </layout:put>
 
     <layout:put block="content">

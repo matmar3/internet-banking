@@ -4,7 +4,7 @@
 
 <layout:extends name="../base.jsp">
     <layout:put block="styles">
-        <link rel="stylesheet" href="../../css/account.css">
+        <link rel="stylesheet" href="/css/account.css">
     </layout:put>
 
     <layout:put block="content">
