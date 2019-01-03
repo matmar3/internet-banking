@@ -1,0 +1,21 @@
+version: '3.3'
+services:
+  database:
+    image: "mariadb:10.4"
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=InternetBankingDB
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ./conf/db/:/docker-entrypoint-initdb.d/
+  web:
+    image: internet_banking
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - database.driverClassName=com.mysql.cj.jdbc.Driver
+      - database.url=jdbc:mysql://database:3306/InternetBankingDB
+      - database.username=root
+      - database.password=root

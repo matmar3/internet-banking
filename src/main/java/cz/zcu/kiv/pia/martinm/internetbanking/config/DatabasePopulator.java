@@ -1,6 +1,5 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.config;
 
-import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionTemplateDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.AccountDao;

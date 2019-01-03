@@ -11,7 +11,7 @@
 	<groupId>cz.zcu.kiv.pia.martinm</groupId>
 	<artifactId>internet-banking</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	
+	<packaging>war</packaging>
 	<name>Internet Banking</name>
 	<description>InternetBanking application for PIA</description>
 
@@ -49,6 +49,7 @@
 			<groupId>org.javamoney</groupId>
 			<artifactId>moneta</artifactId>
 			<version>1.3</version>
+			<type>pom</type>
 		</dependency>
 
 		<!-- Spring Dependencies -->
