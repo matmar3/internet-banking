@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ServerWebInputException;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -48,7 +47,12 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
     public UserDetails loadUserByUsername(final String username)
             throws UsernameNotFoundException {
 
-        return userDao.findByUsername(username);
+        User user = userDao.findByUsername(username);
+        if(user == null) {
+            throw new UsernameNotFoundException("User with given username not found.");
+        }
+
+        return user;
     }
 
     @Override
@@ -108,10 +112,6 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
         public User create(UserDto newUser){
             if (!currentUser.getRole().equals(User.Role.ADMIN.name())) {
                 throw new AccessDeniedException("Users are not allowed to create new accounts");
-            }
-
-            if (newUser.getFirstName() == null || newUser.getLastName() == null || newUser.getBirthNumber() == null || newUser.getEmail() == null) {
-                throw new ServerWebInputException("Mandatory parameters not filled.");
             }
 
             String rawPassword = generatePassword();

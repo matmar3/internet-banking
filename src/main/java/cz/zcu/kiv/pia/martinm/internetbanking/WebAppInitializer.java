@@ -45,6 +45,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         context.setConfigLocation("cz.zcu.kiv.pia.martinm.internetbanking.config");
 
         container.addListener(new ContextLoaderListener(context));
+        container.setInitParameter("defaultHtmlEscape", "true");
 
         ServletRegistration.Dynamic dispatcher = container
                 .addServlet("dispatcher", createDispatcherServlet(context));

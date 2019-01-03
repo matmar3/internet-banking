@@ -11,7 +11,7 @@
 	<groupId>cz.zcu.kiv.pia.martinm</groupId>
 	<artifactId>internet-banking</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	
 	<name>Internet Banking</name>
 	<description>InternetBanking application for PIA</description>
 
