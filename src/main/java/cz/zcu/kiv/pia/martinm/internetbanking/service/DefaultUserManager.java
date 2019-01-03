@@ -1,7 +1,6 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.service;
 
 import cz.zcu.kiv.pia.martinm.internetbanking.EntityNotFoundException;
-import cz.zcu.kiv.pia.martinm.internetbanking.RandomNumberGenerator;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.UserDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.UserDao;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
@@ -61,8 +60,6 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
     }
 
     private class DefaultAuthorizedUserManager implements AuthorizedUserManager {
-
-        private final String USERNAME_FORMAT = "User%04d";
 
         private User currentUser;
 
@@ -149,12 +146,12 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
 
         @Override
         public String generatePassword() {
-            return RandomNumberGenerator.generate(4);
+            return RandomStringGenerator.generateNumeric(4);
         }
 
         @Override
         public String generateUsername() {
-            return String.format(USERNAME_FORMAT, userDao.count());
+            return RandomStringGenerator.generateAlphanumeric(8);
         }
 
     }

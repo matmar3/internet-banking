@@ -2,7 +2,6 @@ package cz.zcu.kiv.pia.martinm.internetbanking.service;
 
 import cz.zcu.kiv.pia.martinm.internetbanking.Bank;
 import cz.zcu.kiv.pia.martinm.internetbanking.EntityNotFoundException;
-import cz.zcu.kiv.pia.martinm.internetbanking.RandomNumberGenerator;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionTemplateDto;
@@ -13,7 +12,6 @@ import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.TransactionTemplate;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
-import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -274,14 +272,14 @@ public class DefaultAccountManager implements AccountManager {
 
         @Override
         public String generateAccountNumber() {
-            String firstPart = RandomNumberGenerator.generate(6);
-            String secondPart = RandomNumberGenerator.generate(10);
+            String firstPart = RandomStringGenerator.generateNumeric(6);
+            String secondPart = RandomStringGenerator.generateNumeric(10);
             return String.format(ACCOUNT_NUMBER_FORMAT, firstPart, secondPart, Bank.CODE);
         }
 
         @Override
         public String generateCardNumber() {
-            return String.format(CARD_NUMBER_FORMAT, RandomNumberGenerator.generate(16));
+            return String.format(CARD_NUMBER_FORMAT, RandomStringGenerator.generateNumeric(16));
         }
     }
 
