@@ -36,14 +36,17 @@ public class InternetBankingController extends GenericController {
 
     private UserManager userManager;
     private AccountManager accountManager;
+    private TransactionTemplateManager templateManager;
     private ModelMapper modelMapper;
 
     public InternetBankingController(
             UserManager userManager,
             AccountManager accountManager,
+            TransactionTemplateManager templateManager,
             ModelMapper modelMapper) {
         this.userManager = userManager;
         this.accountManager = accountManager;
+        this.templateManager = templateManager;
         this.modelMapper = modelMapper;
     }
 
@@ -125,13 +128,13 @@ public class InternetBankingController extends GenericController {
     @RequestMapping("/create-transaction")
     public String showTransactionForm(Model model) {
         User user = userManager.getCurrentUser();
-        AuthorizedAccountManager aam = accountManager.authorize(user);
+        AuthorizedTemplateManager atm = templateManager.authorize(user);
 
         if (!model.containsAttribute("newTransaction")) {
             model.addAttribute("newTransaction", new TransactionDto());
         }
         model.addAttribute("authorizedUser", user);
-        model.addAttribute("templates", aam.findAllTransactionTemplatesByUser(user));
+        model.addAttribute("templates", atm.findAllTemplatesByUser(user));
         model.addAttribute("accounts", getPossibleAccounts(user.getAccounts()));
 
         return "ib/create_transaction";
@@ -141,10 +144,11 @@ public class InternetBankingController extends GenericController {
     public String createTransactionHandler(Model model, @Valid @ModelAttribute("newTransaction") TransactionDto newTransaction, BindingResult result) {
         User user = userManager.getCurrentUser();
         AuthorizedAccountManager aam = accountManager.authorize(user);
+        AuthorizedTemplateManager atm = templateManager.authorize(user);
 
         if (result.hasErrors() || !aam.isTransactionValid(newTransaction, result)) {
             model.addAttribute("authorizedUser", user);
-            model.addAttribute("templates", aam.findAllTransactionTemplatesByUser(user));
+            model.addAttribute("templates", atm.findAllTemplatesByUser(user));
             model.addAttribute("accounts", getPossibleAccounts(user.getAccounts()));
             return "ib/create_transaction";
         }
@@ -185,13 +189,13 @@ public class InternetBankingController extends GenericController {
     @RequestMapping(value = "/templates")
     public String showAllTemplates(Model model) {
         User user = userManager.getCurrentUser();
-        AuthorizedAccountManager aam = accountManager.authorize(user);
+        AuthorizedTemplateManager atm = templateManager.authorize(user);
 
         if (!model.containsAttribute("newTemplate")) {
             model.addAttribute("newTemplate", new TransactionTemplateDto());
         }
         model.addAttribute("authorizedUser", user);
-        model.addAttribute("templates", aam.findAllTransactionTemplatesByUser(user));
+        model.addAttribute("templates", atm.findAllTemplatesByUser(user));
         model.addAttribute("accounts", getPossibleAccounts(user.getAccounts()));
 
         return "ib/templates";
@@ -201,16 +205,16 @@ public class InternetBankingController extends GenericController {
     public String createTransactionTemplateHandler(
             Model model, @ModelAttribute("newTemplate") TransactionTemplateDto newTemplate, BindingResult result) {
         User user = userManager.getCurrentUser();
-        AuthorizedAccountManager aam = accountManager.authorize(user);
+        AuthorizedTemplateManager atm = templateManager.authorize(user);
 
         if (result.hasErrors()) {
             model.addAttribute("authorizedUser", user);
-            model.addAttribute("templates", aam.findAllTransactionTemplatesByUser(user));
+            model.addAttribute("templates", atm.findAllTemplatesByUser(user));
             model.addAttribute("accounts", getPossibleAccounts(user.getAccounts()));
             return "ib/templates";
         }
 
-        aam.createTemplate(newTemplate, user);
+        atm.createTemplate(newTemplate, user);
         return redirect("/ib/templates");
     }
 
@@ -227,8 +231,8 @@ public class InternetBankingController extends GenericController {
         }
 
         User user = userManager.getCurrentUser();
-        AuthorizedAccountManager aam = accountManager.authorize(user);
-        TransactionTemplate storedTemplate = aam.findTransactionTemplateById(user, templateId);
+        AuthorizedTemplateManager atm = templateManager.authorize(user);
+        TransactionTemplate storedTemplate = atm.findTemplateById(user, templateId);
         TransactionTemplateDto template = modelMapper.map(storedTemplate, TransactionTemplateDto.class);
 
         if (!model.containsAttribute("modifyTemplate")) {
@@ -244,16 +248,16 @@ public class InternetBankingController extends GenericController {
     public String modifyTransactionTemplateHandler(
             Model model, @ModelAttribute("modifyTemplate") TransactionTemplateDto newTemplate, BindingResult result) {
         User user = userManager.getCurrentUser();
-        AuthorizedAccountManager aam = accountManager.authorize(user);
+        AuthorizedTemplateManager atm = templateManager.authorize(user);
 
         if (result.hasErrors()) {
             model.addAttribute("authorizedUser", user);
-            model.addAttribute("templates", aam.findAllTransactionTemplatesByUser(user));
+            model.addAttribute("templates", atm.findAllTemplatesByUser(user));
             model.addAttribute("accounts", getPossibleAccounts(user.getAccounts()));
             return "ib/edit_template";
         }
 
-        aam.modifyTemplate(newTemplate);
+        atm.editTemplate(newTemplate);
         return redirect("/ib/templates");
     }
 
@@ -271,9 +275,9 @@ public class InternetBankingController extends GenericController {
         }
 
         User user = userManager.getCurrentUser();
-        AuthorizedAccountManager aam = accountManager.authorize(user);
+        AuthorizedTemplateManager atm = templateManager.authorize(user);
 
-        TransactionTemplate storedTemplate = aam.findTransactionTemplateById(user, templateId);
+        TransactionTemplate storedTemplate = atm.findTemplateById(user, templateId);
         // Mapping to transaction because of missing templateName in form
         TransactionDto template = modelMapper.map(storedTemplate, TransactionDto.class);
 
@@ -288,7 +292,7 @@ public class InternetBankingController extends GenericController {
     @RequestMapping("/remove/template/{id}")
     public String createTransactionTemplate(@PathVariable String id) {
         User user = userManager.getCurrentUser();
-        AuthorizedAccountManager aam = accountManager.authorize(user);
+        AuthorizedTemplateManager atm = templateManager.authorize(user);
 
         if (id == null) return "errorPages/400";
 
@@ -300,7 +304,7 @@ public class InternetBankingController extends GenericController {
             return "errorPages/400";
         }
 
-        aam.removeTemplate(templateId);
+        atm.removeTemplate(templateId);
         return redirect("/ib/templates");
     }
 

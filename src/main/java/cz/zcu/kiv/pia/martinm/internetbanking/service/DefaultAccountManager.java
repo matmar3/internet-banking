@@ -4,13 +4,10 @@ import cz.zcu.kiv.pia.martinm.internetbanking.Bank;
 import cz.zcu.kiv.pia.martinm.internetbanking.EntityNotFoundException;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
-import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionTemplateDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.AccountDao;
 import cz.zcu.kiv.pia.martinm.internetbanking.dao.TransactionDao;
-import cz.zcu.kiv.pia.martinm.internetbanking.dao.TransactionTemplateDao;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
-import cz.zcu.kiv.pia.martinm.internetbanking.domain.TransactionTemplate;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +19,6 @@ import org.springframework.validation.FieldError;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Date: 26.12.2018
@@ -36,18 +32,14 @@ public class DefaultAccountManager implements AccountManager {
 
     private TransactionDao transactionDao;
 
-    private TransactionTemplateDao transactionTemplateDao;
-
     private MessageProvider messageProvider;
 
     public DefaultAccountManager(
             AccountDao accountDao,
             TransactionDao transactionDao,
-            TransactionTemplateDao transactionTemplateDao,
             MessageProvider messageProvider) {
         this.accountDao = accountDao;
         this.transactionDao = transactionDao;
-        this.transactionTemplateDao = transactionTemplateDao;
         this.messageProvider = messageProvider;
     }
 
@@ -69,7 +61,7 @@ public class DefaultAccountManager implements AccountManager {
         }
 
         @Override
-        public Account createAccount(AccountDto newAccount, User owner) {
+        public void createAccount(AccountDto newAccount, User owner) {
             if (owner.getRole().equals(User.Role.ADMIN.name())) {
                 throw new AccessDeniedException(messageProvider.getMessage("error.permissionDenied.adminAcc"));
             }
@@ -79,7 +71,7 @@ public class DefaultAccountManager implements AccountManager {
 
             String cardNumber = generateCardNumber();
             String accountNumber = generateAccountNumber();
-            return accountDao.save(new Account(
+            accountDao.save(new Account(
                newAccount.getCurrency(),
                accountNumber,
                cardNumber,
@@ -112,7 +104,7 @@ public class DefaultAccountManager implements AccountManager {
         }
 
         @Override
-        public Transaction performTransaction(TransactionDto transactionDto) {
+        public void performTransaction(TransactionDto transactionDto) {
             BigDecimal receivedAmount;
             String receiverCurrency;
 
@@ -147,7 +139,20 @@ public class DefaultAccountManager implements AccountManager {
                     transactionDto.getMessage()
             );
 
-            return updateEntities(sender, transactionDto.getSentAmount(), receiver, receivedAmount, newTransaction);
+            updateEntities(sender, transactionDto.getSentAmount(), receiver, receivedAmount, newTransaction);
+        }
+
+        private void updateEntities(Account sender, BigDecimal sentAmount, Account receiver, BigDecimal receivedAmount, Transaction transaction) {
+            if (sender != null) {
+                sender.setBalance(sender.getBalance().subtract(sentAmount));
+                accountDao.save(sender);
+            }
+            if (receiver != null) {
+                receiver.setBalance(receiver.getBalance().add(receivedAmount));
+                accountDao.save(receiver);
+            }
+
+            transactionDao.save(transaction);
         }
 
         @Override
@@ -169,105 +174,6 @@ public class DefaultAccountManager implements AccountManager {
                 throw new AccessDeniedException("Cannot send transaction from other user's account");
 
             return valid;
-        }
-
-        private Transaction updateEntities(Account sender, BigDecimal sentAmount, Account receiver, BigDecimal receivedAmount, Transaction transaction) {
-            transaction = transactionDao.save(transaction);
-
-            if (sender != null) {
-                sender.setBalance(sender.getBalance().subtract(sentAmount));
-                accountDao.save(sender);
-            }
-            if (receiver != null) {
-                receiver.setBalance(receiver.getBalance().add(receivedAmount));
-                accountDao.save(receiver);
-            }
-
-            return transaction;
-        }
-
-        @Override
-        public TransactionTemplate createTemplate(TransactionTemplateDto newTemplate, User user) {
-            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(user.getId())) {
-                throw new AccessDeniedException("Cannot creates template for other users");
-            }
-
-            TransactionTemplate template = new TransactionTemplate(
-                    newTemplate.getTemplateName(),
-                    newTemplate.getReceiverAccountNumber(),
-                    newTemplate.getSentAmount(),
-                    newTemplate.getSenderAccountNumber(),
-                    newTemplate.getDueDate(),
-                    newTemplate.getConstantSymbol(),
-                    newTemplate.getVariableSymbol(),
-                    newTemplate.getSpecificSymbol(),
-                    newTemplate.getMessage(),
-                    user
-            );
-
-            return transactionTemplateDao.save(template);
-        }
-
-        @Override
-        public List<TransactionTemplate> findAllTransactionTemplatesByUser(User user) {
-            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(user.getId())) {
-                throw new AccessDeniedException("Cannot show other user's transaction templates");
-            }
-
-            return transactionTemplateDao.findAllByOwner(user);
-        }
-
-        @Override
-        public TransactionTemplate findTransactionTemplateById(User user, Integer id) {
-            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(user.getId())) {
-                throw new AccessDeniedException("Cannot show other user's transaction templates");
-            }
-
-            TransactionTemplate template = transactionTemplateDao.findByOwnerAndId(user, id);
-            if (template == null) {
-                throw new EntityNotFoundException("Transaction template with given ID and owner not exists.");
-            }
-
-            return template;
-        }
-
-        @Override
-        public void removeTemplate(Integer id) {
-            TransactionTemplate template = transactionTemplateDao.findById(id).orElse(null);
-
-            if (template == null) {
-                throw new EntityNotFoundException("Transaction template with given ID not exists.");
-            }
-
-            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(template.getOwner().getId())) {
-                throw new AccessDeniedException("Cannot remove other user's templates");
-            }
-
-            transactionTemplateDao.delete(template);
-        }
-
-        @Override
-        public TransactionTemplate modifyTemplate(TransactionTemplateDto modifyTemplate) {
-            TransactionTemplate template = transactionTemplateDao.findById(modifyTemplate.getId()).orElse(null);
-
-            if (template == null) {
-                throw new AccessDeniedException("Cannot remove not existing template");
-            }
-
-            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(template.getOwner().getId())) {
-                throw new AccessDeniedException("Cannot remove other user's templates");
-            }
-
-            template.setTemplateName(modifyTemplate.getTemplateName());
-            template.setReceiverAccountNumber(modifyTemplate.getReceiverAccountNumber());
-            template.setSenderAccountNumber(modifyTemplate.getSenderAccountNumber());
-            template.setSentAmount(modifyTemplate.getSentAmount());
-            template.setDueDate(modifyTemplate.getDueDate());
-            template.setConstantSymbol(modifyTemplate.getConstantSymbol());
-            template.setVariableSymbol(modifyTemplate.getVariableSymbol());
-            template.setSpecificSymbol(modifyTemplate.getSpecificSymbol());
-            template.setMessage(modifyTemplate.getMessage());
-            return transactionTemplateDao.save(template);
         }
 
         @Override

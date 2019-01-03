@@ -8,6 +8,8 @@ import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
 import cz.zcu.kiv.pia.martinm.internetbanking.service.AccountManager;
 import cz.zcu.kiv.pia.martinm.internetbanking.service.AuthorizedAccountManager;
+import cz.zcu.kiv.pia.martinm.internetbanking.service.AuthorizedTemplateManager;
+import cz.zcu.kiv.pia.martinm.internetbanking.service.TransactionTemplateManager;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,12 +31,20 @@ public class DatabasePopulator {
 
     private AccountManager accountManager;
 
+    private TransactionTemplateManager templateManager;
+
     private PasswordEncoder encoder;
 
-    public DatabasePopulator(UserDao userDao, AccountDao accountDao, AccountManager accountManager, PasswordEncoder encoder) {
+    public DatabasePopulator(
+            UserDao userDao,
+            AccountDao accountDao,
+            AccountManager accountManager,
+            TransactionTemplateManager templateManager,
+            PasswordEncoder encoder) {
         this.userDao = userDao;
         this.accountDao = accountDao;
         this.accountManager = accountManager;
+        this.templateManager = templateManager;
         this.encoder = encoder;
     }
 
@@ -82,6 +92,7 @@ public class DatabasePopulator {
 
         AuthorizedAccountManager authorizedAccountManager1 = accountManager.authorize(user1);
         AuthorizedAccountManager authorizedAccountManager2 = accountManager.authorize(user2);
+        AuthorizedTemplateManager authorizedTemplateManager = templateManager.authorize(user1);
 
         generateTransaction(authorizedAccountManager1, account1.getAccountNumber(), account2.getAccountNumber(), 10);
         generateTransaction(authorizedAccountManager2, account2.getAccountNumber(), account1.getAccountNumber(), 7200);
@@ -132,7 +143,7 @@ public class DatabasePopulator {
         transactionTemplate.setReceiverAccountNumber(account2.getAccountNumber());
         transactionTemplate.setSentAmount(new BigDecimal(2121));
 
-        authorizedAccountManager1.createTemplate(transactionTemplate, user1);
+        authorizedTemplateManager.createTemplate(transactionTemplate, user1);
 
     }
 
