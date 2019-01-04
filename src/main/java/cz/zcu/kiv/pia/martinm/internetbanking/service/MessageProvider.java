@@ -7,6 +7,6 @@ package cz.zcu.kiv.pia.martinm.internetbanking.service;
  */
 public interface MessageProvider {
 
-    String getMessage(String identifier);
+    String getMessage(String identifier, Object ...args);
 
 }

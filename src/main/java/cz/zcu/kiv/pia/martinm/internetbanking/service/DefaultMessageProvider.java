@@ -22,8 +22,9 @@ public class DefaultMessageProvider implements MessageProvider {
     }
 
     @Override
-    public String getMessage(String identifier) {
-        return messageSource.getMessage(identifier, null, LOCALE);
+    public String getMessage(String identifier, Object ...args) {
+        if (args.length == 0) args = null;
+        return messageSource.getMessage(identifier, args, LOCALE);
     }
 
 }

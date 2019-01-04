@@ -63,10 +63,10 @@ public class DefaultAccountManager implements AccountManager {
         @Override
         public void createAccount(AccountDto newAccount, User owner) {
             if (owner.getRole().equals(User.Role.ADMIN.name())) {
-                throw new AccessDeniedException(messageProvider.getMessage("error.permissionDenied.adminAcc"));
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.adminCannotHaveAccount"));
             }
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !owner.getId().equals(currentUser.getId())) {
-                throw new AccessDeniedException("Cannot create account for other user");
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.cannotCreateAccountForOtherUser"));
             }
 
             String cardNumber = generateCardNumber();
@@ -84,11 +84,11 @@ public class DefaultAccountManager implements AccountManager {
             Account account = accountDao.findById(id).orElse(null);
 
             if (account == null) {
-                throw new EntityNotFoundException("Account with given ID not exists.");
+                throw new EntityNotFoundException(messageProvider.getMessage("error.entityNotFound", Account.class));
             }
 
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(account.getUser().getId())) {
-                throw new AccessDeniedException("Cannot show other user's account");
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.cannotShowOtherUserData"));
             }
 
             return account;
@@ -97,7 +97,7 @@ public class DefaultAccountManager implements AccountManager {
         @Override
         public Page<Transaction> findAllTransactionsByAccount(Account account, Pageable pageable) {
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(account.getUser().getId())) {
-                throw new AccessDeniedException("Cannot show other user's accounts");
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.cannotShowOtherUserData"));
             }
 
             return transactionDao.findAllByAccount(account, pageable);
@@ -161,20 +161,26 @@ public class DefaultAccountManager implements AccountManager {
             boolean valid = true;
 
             if (sender == null) {
-                throw new EntityNotFoundException("Account with given account number not exists.");
+                throw new EntityNotFoundException(messageProvider.getMessage("error.entityNotFound", Account.class));
             }
 
             if (!currentUser.getId().equals(sender.getUser().getId())) {
-                throw new AccessDeniedException("Cannot perform transaction from foreign account.");
+                throw new AccessDeniedException(
+                        messageProvider.getMessage("error.accessDenied.cannotPerformTransaction.differentAccount")
+                );
             }
 
             if (transaction.getSenderAccountNumber().equals(transaction.getReceiverAccountNumber())) {
-                result.addError(new FieldError("newTransaction", "receiverAccountNumber", "Receiver cannot be the same account as sender."));
+                result.addError(
+                        new FieldError("newTransaction", "receiverAccountNumber", messageProvider.getMessage("error.fieldMessage.sameAccounts"))
+                );
                 valid = false;
             }
 
             if (sender.getBalance().compareTo(transaction.getSentAmount()) < 0) {
-                result.addError(new FieldError("newTransaction", "sentAmount", "Sender does not have enough money."));
+                result.addError(
+                        new FieldError("newTransaction", "sentAmount", messageProvider.getMessage("error.fieldMessage.notEnoughMoney"))
+                );
                 valid = false;
             }
 
