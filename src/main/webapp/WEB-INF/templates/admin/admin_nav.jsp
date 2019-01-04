@@ -1,23 +1,24 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <div class="container">
     <nav>
         <div class="nav">
             <ul class="nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/admin/index">Zákaznické účty</a>
+                    <a class="nav-link" href="/admin/index"><spring:message code="admin.nav.customerAccounts" /></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/admin/create-user">Založit účet</a>
+                    <a class="nav-link active" href="/admin/create-user"><spring:message code="admin.nav.createAccount" /></a>
                 </li>
             </ul>
             <ul class="nav">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">${authorizedUser.username}</a>
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">${authorizedUser.firstName} ${authorizedUser.lastName}</a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="/admin/profile"><i class="fas fa-cog"></i> Nastavení</a>
+                        <a class="dropdown-item" href="/admin/profile"><spring:message code="admin.nav.accountSettings" /> <i class="fas fa-cog"></i></a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="javascript:logout()">Odhlásit se <i class="fas fa-sign-out-alt"></i></a>
+                        <a class="dropdown-item" href="javascript:logout()"><spring:message code="admin.nav.logOut" /> <i class="fas fa-sign-out-alt"></i></a>
                     </div>
                 </li>
             </ul>

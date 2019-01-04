@@ -23,13 +23,14 @@
 </head>
 <body>
     <div class="container-fluid" id="main-container">
+        <spring:message code="base.logo.alt" var="logoLabel" />
 
         <div class="container">
             <header>
                 <div class="row p-2">
                     <div class="col-md">
                         <a href="/index">
-                            <img src="/images/logo.png" alt="Bank a. s." class="logo">
+                            <img src="/images/logo.png" alt="${logoLabel}" class="logo">
                         </a>
                     </div>
                     <div class="col-md text-right align-self-center"><spring:message code="base.phoneNumber" /></div>
@@ -51,7 +52,7 @@
         <div class="container">
             <footer class="row justify-content-center pt-5 pb-3">
                 <div class="col-md-4 text-center">
-                    <img src="/images/logo.png" alt="Bank a. s." class="logo"> <br /><br />
+                    <img src="/images/logo.png" alt="${logoLabel}" class="logo"> <br /><br />
                     <spring:message code="base.copyright" />
                 </div>
             </footer>
