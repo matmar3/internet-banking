@@ -160,6 +160,14 @@ public class DefaultAccountManager implements AccountManager {
             Account sender = accountDao.findByAccountNumber(transaction.getSenderAccountNumber());
             boolean valid = true;
 
+            if (sender == null) {
+                throw new EntityNotFoundException("Account with given account number not exists.");
+            }
+
+            if (!currentUser.getId().equals(sender.getUser().getId())) {
+                throw new AccessDeniedException("Cannot perform transaction from foreign account.");
+            }
+
             if (transaction.getSenderAccountNumber().equals(transaction.getReceiverAccountNumber())) {
                 result.addError(new FieldError("newTransaction", "receiverAccountNumber", "Receiver cannot be the same account as sender."));
                 valid = false;
@@ -169,9 +177,6 @@ public class DefaultAccountManager implements AccountManager {
                 result.addError(new FieldError("newTransaction", "sentAmount", "Sender does not have enough money."));
                 valid = false;
             }
-
-            if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !sender.getUser().getId().equals(currentUser.getId()))
-                throw new AccessDeniedException("Cannot send transaction from other user's account");
 
             return valid;
         }

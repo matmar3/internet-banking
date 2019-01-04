@@ -107,11 +107,11 @@ public class DefaultTemplateManager implements  TransactionTemplateManager {
             TransactionTemplate template = transactionTemplateDao.findById(modifyTemplate.getId()).orElse(null);
 
             if (template == null) {
-                throw new AccessDeniedException("Cannot remove not existing template");
+                throw new EntityNotFoundException("Cannot edit not existing template");
             }
 
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(template.getOwner().getId())) {
-                throw new AccessDeniedException("Cannot remove other user's templates");
+                throw new AccessDeniedException("Cannot edit other user's templates");
             }
 
             template.setTemplateName(modifyTemplate.getTemplateName());

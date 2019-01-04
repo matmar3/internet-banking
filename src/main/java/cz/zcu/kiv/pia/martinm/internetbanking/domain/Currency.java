@@ -1,7 +1,5 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.domain;
 
-import java.util.Arrays;
-
 /**
  * Date: 02.01.2019
  *
@@ -9,6 +7,6 @@ import java.util.Arrays;
  */
 public enum Currency {
 
-    USD, EUR, JPY, GBP, AUD, CAD, CHF, CNH, SEK, NZD, CZK
+    USD, EUR, JPY, GBP, AUD, CAD, CHF, SEK, CZK
 
 }

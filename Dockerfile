@@ -11,7 +11,7 @@ EXPOSE 8080
 ARG JAR_FILE=target/internet-banking-0.0.1-SNAPSHOT.war
 
 # Add the application's jar to the container
-ADD ${JAR_FILE} websocket-demo.war
+ADD ${JAR_FILE} internet-banking.war
 
 # Run the jar file
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/websocket-demo.war"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/internet-banking.war"]
