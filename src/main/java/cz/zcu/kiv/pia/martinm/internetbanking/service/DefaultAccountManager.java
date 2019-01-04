@@ -66,7 +66,7 @@ public class DefaultAccountManager implements AccountManager {
                 throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.adminCannotHaveAccount"));
             }
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !owner.getId().equals(currentUser.getId())) {
-                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.cannotCreateAccountForOtherUser"));
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.createAccountForOtherUser"));
             }
 
             String cardNumber = generateCardNumber();
@@ -84,11 +84,11 @@ public class DefaultAccountManager implements AccountManager {
             Account account = accountDao.findById(id).orElse(null);
 
             if (account == null) {
-                throw new EntityNotFoundException(messageProvider.getMessage("error.entityNotFound", Account.class));
+                throw new EntityNotFoundException(messageProvider.getMessage("error.entityNotFound", Account.class.getSimpleName()));
             }
 
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(account.getUser().getId())) {
-                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.cannotShowOtherUserData"));
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.showOtherUserData"));
             }
 
             return account;
@@ -97,7 +97,7 @@ public class DefaultAccountManager implements AccountManager {
         @Override
         public Page<Transaction> findAllTransactionsByAccount(Account account, Pageable pageable) {
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(account.getUser().getId())) {
-                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.cannotShowOtherUserData"));
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.showOtherUserData"));
             }
 
             return transactionDao.findAllByAccount(account, pageable);
@@ -161,12 +161,12 @@ public class DefaultAccountManager implements AccountManager {
             boolean valid = true;
 
             if (sender == null) {
-                throw new EntityNotFoundException(messageProvider.getMessage("error.entityNotFound", Account.class));
+                throw new EntityNotFoundException(messageProvider.getMessage("error.entityNotFound", Account.class.getSimpleName()));
             }
 
             if (!currentUser.getId().equals(sender.getUser().getId())) {
                 throw new AccessDeniedException(
-                        messageProvider.getMessage("error.accessDenied.cannotPerformTransaction.differentAccount")
+                        messageProvider.getMessage("error.accessDenied.performTransaction.differentAccount")
                 );
             }
 

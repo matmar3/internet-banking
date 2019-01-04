@@ -45,7 +45,7 @@ public class DefaultTemplateManager implements  TransactionTemplateManager {
         @Override
         public void createTemplate(TransactionTemplateDto newTemplate, User user) {
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(user.getId())) {
-                throw new AccessDeniedException("Cannot creates template for other users");
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.modifyOtherUserData"));
             }
 
             TransactionTemplate template = new TransactionTemplate(
@@ -67,7 +67,7 @@ public class DefaultTemplateManager implements  TransactionTemplateManager {
         @Override
         public List<TransactionTemplate> findAllTemplatesByUser(User user) {
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(user.getId())) {
-                throw new AccessDeniedException("Cannot show other user's transaction templates");
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.showOtherUserData"));
             }
 
             return transactionTemplateDao.findAllByOwner(user);
@@ -76,12 +76,12 @@ public class DefaultTemplateManager implements  TransactionTemplateManager {
         @Override
         public TransactionTemplate findTemplateById(User user, Integer id) {
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(user.getId())) {
-                throw new AccessDeniedException("Cannot show other user's transaction templates");
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.showOtherUserData"));
             }
 
             TransactionTemplate template = transactionTemplateDao.findByOwnerAndId(user, id);
             if (template == null) {
-                throw new EntityNotFoundException("Transaction template with given ID and owner not exists.");
+                throw new EntityNotFoundException(messageProvider.getMessage("error.entityNotFound", TransactionTemplate.class.getSimpleName()));
             }
 
             return template;
@@ -92,11 +92,11 @@ public class DefaultTemplateManager implements  TransactionTemplateManager {
             TransactionTemplate template = transactionTemplateDao.findById(id).orElse(null);
 
             if (template == null) {
-                throw new EntityNotFoundException("Transaction template with given ID not exists.");
+                throw new EntityNotFoundException(messageProvider.getMessage("error.entityNotFound", TransactionTemplate.class.getSimpleName()));
             }
 
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(template.getOwner().getId())) {
-                throw new AccessDeniedException("Cannot remove other user's templates");
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.modifyOtherUserData"));
             }
 
             transactionTemplateDao.delete(template);
@@ -107,11 +107,11 @@ public class DefaultTemplateManager implements  TransactionTemplateManager {
             TransactionTemplate template = transactionTemplateDao.findById(modifyTemplate.getId()).orElse(null);
 
             if (template == null) {
-                throw new EntityNotFoundException("Cannot edit not existing template");
+                throw new EntityNotFoundException(messageProvider.getMessage("error.entityNotFound", TransactionTemplate.class.getSimpleName()));
             }
 
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(template.getOwner().getId())) {
-                throw new AccessDeniedException("Cannot edit other user's templates");
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.modifyOtherUserData"));
             }
 
             template.setTemplateName(modifyTemplate.getTemplateName());

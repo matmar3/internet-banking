@@ -27,9 +27,12 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
 
     private PasswordEncoder encoder;
 
-    public DefaultUserManager(UserDao userDao, PasswordEncoder encoder) {
+    private MessageProvider messageProvider;
+
+    public DefaultUserManager(UserDao userDao, PasswordEncoder encoder, MessageProvider messageProvider) {
         this.userDao = userDao;
         this.encoder = encoder;
+        this.messageProvider = messageProvider;
     }
 
     @Override
@@ -48,7 +51,7 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
 
         User user = userDao.findByUsername(username);
         if(user == null) {
-            throw new UsernameNotFoundException("User with given username not found.");
+            throw new UsernameNotFoundException(messageProvider.getMessage("error.usernameNotFound"));
         }
 
         return user;
@@ -70,16 +73,16 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
         @Override
         public User remove(Integer id) {
             if (!currentUser.getRole().equals(User.Role.ADMIN.name())) {
-                throw new AccessDeniedException("Only admin can remove a user");
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.user.removeOtherUser"));
             }
 
             User user = userDao.findById(id).orElse(null);
             if (user == null) {
-                throw new EntityNotFoundException("User not exists.");
+                throw new EntityNotFoundException(messageProvider.getMessage("error.entityNotFound", User.class.getSimpleName()));
             }
 
             if (user.getRole().equals(User.Role.ADMIN.name())) {
-                throw new AccessDeniedException("Cannot remove admin's account");
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.user.removeAdmin"));
             }
 
             user.setEnabled(false);
@@ -91,7 +94,7 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
             User user = userDao.getOne(id);
 
             if (!currentUser.getRole().equals(User.Role.ADMIN.name()) && !currentUser.getId().equals(user.getId())) {
-                throw new AccessDeniedException("User cannot edit other user's account");
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.user.editOtherUser"));
             }
 
             user.setMobileNumber(modifiedUser.getMobileNumber());
@@ -108,7 +111,7 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
         @Override
         public User create(UserDto newUser){
             if (!currentUser.getRole().equals(User.Role.ADMIN.name())) {
-                throw new AccessDeniedException("Users are not allowed to create new accounts");
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.user.createAccount"));
             }
 
             String rawPassword = generatePassword();
@@ -136,7 +139,7 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
         @Override
         public List<User> findAllUsers() {
             if (!currentUser.getRole().equals(User.Role.ADMIN.name())) {
-                throw new AccessDeniedException("Users are not allowed to see other accounts");
+                throw new AccessDeniedException(messageProvider.getMessage("error.accessDenied.showOtherUserData"));
             }
 
             List<User> users = userDao.findAll();

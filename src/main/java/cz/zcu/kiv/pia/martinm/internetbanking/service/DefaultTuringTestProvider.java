@@ -14,7 +14,10 @@ public class DefaultTuringTestProvider implements TuringTestProvider {
 
     private Map<Integer, TuringTest> activeTests;
 
-    public DefaultTuringTestProvider() {
+    private MessageProvider messageProvider;
+
+    public DefaultTuringTestProvider(MessageProvider messageProvider) {
+        this.messageProvider = messageProvider;
         activeTests = new HashMap<>();
     }
 
@@ -31,7 +34,7 @@ public class DefaultTuringTestProvider implements TuringTestProvider {
 
         TuringTest newTest = new DefaultTuringTest(
                 index,
-                String.format("Kolik je %d + %d?", a, b),
+                String.format(messageProvider.getMessage("turingTest.questionFormat"), a, b),
                 (a + b)
         );
         activeTests.put(index, newTest);
