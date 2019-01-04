@@ -26,17 +26,23 @@ class PublicPagesController extends GenericController {
     }
 
     @RequestMapping({"", "/index"})
-    ModelAndView indexHandler() {
+    public ModelAndView indexHandler() {
         return new ModelAndView("index");
     }
 
     @RequestMapping("/login")
-    ModelAndView login() {
-        return new ModelAndView("login");
+    public String login() {
+        User user = um.getCurrentUser();
+
+        if (user != null) {
+            return redirect("role-check");
+        }
+
+        return "login";
     }
 
     @RequestMapping("/login-failed")
-    ModelAndView loginFailed() {
+    public ModelAndView loginFailed() {
         ModelAndView mav = new ModelAndView("login");
         mav.addObject("message", new MessageContainer(
                 MessageContainer.Type.WARNING,
@@ -46,17 +52,20 @@ class PublicPagesController extends GenericController {
     }
 
     @RequestMapping("/role-check")
-    String checkRoles() {
+    public String checkRoles() {
         User user = um.getCurrentUser();
 
-        if (user.getRole().equals(User.Role.ADMIN.name())) {
+        if (user == null) {
+            return redirect("login-failed");
+        }
+        else if (user.getRole().equals(User.Role.ADMIN.name())) {
             return redirect("admin/");
         }
         else if (user.getRole().equals(User.Role.CUSTOMER.name())) {
             return redirect("ib/");
         }
 
-        return redirect("logout");
+        return redirect("login-failed");
     }
 
 }
