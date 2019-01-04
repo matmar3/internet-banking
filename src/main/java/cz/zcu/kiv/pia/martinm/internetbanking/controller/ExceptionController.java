@@ -25,10 +25,8 @@ public class ExceptionController {
 
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ModelAndView handleError404(Exception e)   {
-        ModelAndView mav = new ModelAndView("errorPages/404");
-        mav.addObject("exception", e);
-        return mav;
+    public String handleError404() {
+        return "errorPages/404";
     }
 
     @ExceptionHandler({
@@ -37,10 +35,8 @@ public class ExceptionController {
             BindException.class,
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ModelAndView handle400(Exception e)   {
-        ModelAndView mav = new ModelAndView("errorPages/400");
-        mav.addObject("exception", e);
-        return mav;
+    public String handle400() {
+        return "errorPages/400";
     }
 
     @ExceptionHandler({
@@ -48,10 +44,8 @@ public class ExceptionController {
             ServletException.class
     })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ModelAndView handleGeneralError(Exception e)   {
-        ModelAndView mav = new ModelAndView("errorPages/505");
-        mav.addObject("exception", e);
-        return mav;
+    public String handleGeneralError() {
+        return "errorPages/500";
     }
 
 }

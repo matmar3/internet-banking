@@ -27,7 +27,11 @@
         <div class="container">
             <header>
                 <div class="row p-2">
-                    <div class="col-md"><img src="/images/logo.png" alt="Bank a. s." class="logo"></div>
+                    <div class="col-md">
+                        <a href="/index">
+                            <img src="/images/logo.png" alt="Bank a. s." class="logo">
+                        </a>
+                    </div>
                     <div class="col-md text-right align-self-center"><spring:message code="base.phoneNumber" /></div>
                 </div>
             </header>

@@ -16,9 +16,9 @@
                 <div class="row h-100 align-items-center justify-content-center">
                     <div class="col-12 text-center">
                         <div class="h1">
-                            <spring:message code="errorPage.400.status" />
+                            <spring:message code="errorPage.500.status" />
                         </div>
-                        <spring:message code="errorPage.400.description" />
+                        <spring:message code="errorPage.500.description" />
                     </div>
                 </div>
             </div>
