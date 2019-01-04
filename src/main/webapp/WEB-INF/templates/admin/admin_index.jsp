@@ -30,6 +30,7 @@
                                 <tbody>
                                 <c:choose>
                                     <c:when test="${not empty customers}">
+                                        <spring:message code="admin.index.table.removeTooltip" var="removeTooltip" />
                                         <c:forEach items="${customers}" var="customer">
                                             <tr>
                                                 <td>${customer.id}</td>
@@ -38,7 +39,6 @@
                                                 <td>${customer.email}</td>
                                                 <td>${customer.address}</td>
                                                 <td>
-                                                    <spring:message code="admin.index.table.removeTooltip" var="removeTooltip" />
                                                     <a href="remove/user/${customer.id}" class="badge badge-danger" data-toggle="tooltip" data-placement="right" title="${removeTooltip}">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </a>
