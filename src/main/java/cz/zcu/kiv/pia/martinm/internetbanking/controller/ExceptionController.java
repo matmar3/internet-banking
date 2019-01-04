@@ -11,6 +11,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,12 +32,6 @@ public class ExceptionController {
     }
 
     @ExceptionHandler({
-            MissingServletRequestParameterException.class,
-            MissingServletRequestPartException.class,
-            ServletRequestBindingException.class,
-            MethodArgumentNotValidException.class,
-            HttpMessageNotReadableException.class,
-            TypeMismatchException.class,
             EntityNotFoundException.class,
             AccessDeniedException.class,
             BindException.class,

@@ -38,6 +38,9 @@ public class DefaultUserManagerTest {
     @MockBean
     private PasswordEncoder encoder;
 
+    @MockBean
+    private MessageProvider messageProvider;
+
     private DefaultUserManager userManager;
 
     private User admin, customer, customer2;
@@ -45,7 +48,7 @@ public class DefaultUserManagerTest {
     @Before
     public void setUp() {
 
-        userManager = new DefaultUserManager(userDao, encoder);
+        userManager = new DefaultUserManager(userDao, encoder, messageProvider);
 
         admin = new User("Jan", "Kratochvíl", "870515/2213", "kratochvil.jan@gmail.com");
         admin.setId(1);

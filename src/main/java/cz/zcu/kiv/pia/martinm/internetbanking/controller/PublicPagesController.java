@@ -68,4 +68,11 @@ class PublicPagesController extends GenericController {
         return redirect("login-failed");
     }
 
+    @RequestMapping("/403")
+    public ModelAndView handle403(Exception e)   {
+        ModelAndView mav = new ModelAndView("errorPages/403");
+        mav.addObject("exception", e);
+        return mav;
+    }
+
 }
