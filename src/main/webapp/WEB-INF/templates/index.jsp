@@ -14,16 +14,16 @@
                 <div class="nav">
                     <ul class="nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Půjčky</a>
+                            <a class="nav-link active" href="#"><spring:message code="homepage.nav.loans" /></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Hypotéky</a>
+                            <a class="nav-link" href="#"><spring:message code="homepage.nav.mortgage" /></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Spoření</a>
+                            <a class="nav-link" href="#"><spring:message code="homepage.nav.insurance" /></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Pojištění</a>
+                            <a class="nav-link" href="#"><spring:message code="homepage.nav.contact" /></a>
                         </li>
                     </ul>
                     <ul class="nav">
@@ -46,12 +46,12 @@
                     <div class="block-section-content"><spring:message code="homepage.services.freeAccount.content" /></div>
                 </div>
                 <div class="custom-col-md-35 col-12">
-                    <div class="block-section-title text-center">Kurzovní lístek</div>
-                    <div class="block-section-content"></div>
+                    <div class="block-section-title text-center"><spring:message code="homepage.services.rates" /></div>
+                    <div class="block-section-content"><!-- TODO vygenerovat nekolik kurzu --></div>
                 </div>
                 <div class="custom-col-md-35 col-12">
-                    <div class="block-section-title text-center">Nejčastější dotazy</div>
-                    <div class="block-section-content"></div>
+                    <div class="block-section-title text-center"><spring:message code="homepage.services.faq" /></div>
+                    <div class="block-section-content"><spring:message code="homepage.services.faq.content" /></div>
                 </div>
             </div>
         </div>
@@ -60,27 +60,25 @@
             <div class="container">
                 <div class="row pt-3 pb-3 mb-3">
                     <div class="col-md-4">
-                        <div class="services-heading">Produkty</div>
+                        <div class="services-heading"><spring:message code="homepage.services.products" /></div>
                         <ul class="services-items">
-                            <li>Hypotéky</li>
-                            <li>Spoření</li>
-                            <li>Pojištění</li>
+                            <li><spring:message code="homepage.nav.loans" /></li>
+                            <li><spring:message code="homepage.nav.mortgage" /></li>
+                            <li><spring:message code="homepage.nav.insurance" /></li>
                         </ul>
                     </div>
                     <div class="col-md-4">
-                        <div class="services-heading">O nás</div>
+                        <div class="services-heading"><spring:message code="homepage.services.about" /></div>
                         <ul class="services-items">
-                            <li>Kdo jsme</li>
-                            <li>Pobočky</li>
-                            <li>Kontakt</li>
+                            <li><spring:message code="homepage.services.about" /></li>
+                            <li><spring:message code="homepage.nav.contact" /></li>
                         </ul>
                     </div>
                     <div class="col-md-4">
-                        <div class="services-heading">Užitečné informace</div>
+                        <div class="services-heading"><spring:message code="homepage.services.info" /></div>
                         <ul class="services-items">
-                            <li>Časté dotazy</li>
-                            <li>Ochrana osobních údajů</li>
-                            <li>Ceník služeb</li>
+                            <li><spring:message code="homepage.services.faq" /></li>
+                            <li><spring:message code="homepage.nav.pricing" /></li>
                         </ul>
                     </div>
                 </div>

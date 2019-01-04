@@ -12,6 +12,16 @@
     background-color: #E4F3FC;
 }
 
+#flash-message {
+    position: absolute;
+    width: 280px;
+    left: 50%;
+    top: 5em;
+    margin-left: -140px;
+    text-align: center;
+    z-index: 1000;
+}
+
 .formError {
     margin-left: 2em;
     color: red;
