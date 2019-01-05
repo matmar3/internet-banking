@@ -4,6 +4,10 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <layout:extends name="../base.jsp">
+    <layout:put block="title" type="REPLACE">
+        <title><spring:message code="admin.title" /></title>
+    </layout:put>
+
     <layout:put block="styles">
     </layout:put>
 
