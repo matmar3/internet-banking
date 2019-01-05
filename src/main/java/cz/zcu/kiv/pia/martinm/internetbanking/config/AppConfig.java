@@ -13,6 +13,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 /**
+ * Web MVC configuration file.
+ *
  * Date: 18.12.2018
  *
  * @author Martin Matas
@@ -22,6 +24,12 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan("cz.zcu.kiv.pia.martinm.internetbanking.controller")
 public class AppConfig implements WebMvcConfigurer {
 
+    /**
+     * Configures path for static resources e.g. css, js, images, ...
+     *
+     * @param reg - instance that stores registrations of resource handlers for serving static resources
+     *            such as images, css files and others through Spring MVC
+     */
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry reg) {
         reg.addResourceHandler("/css/**").addResourceLocations("/WEB-INF/css/");
@@ -29,6 +37,12 @@ public class AppConfig implements WebMvcConfigurer {
         reg.addResourceHandler("/images/**").addResourceLocations("/WEB-INF/images/");
     }
 
+    /**
+     * Configures location of JSP templates which can be displayed using Spring MVC Controller
+     *
+     * @return instance of {@link InternalResourceViewResolver} which is view class for all
+     * views that can be specified via {@link org.springframework.web.servlet.view.UrlBasedViewResolver}
+     */
     @Bean
     public InternalResourceViewResolver viewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
@@ -38,11 +52,23 @@ public class AppConfig implements WebMvcConfigurer {
         return resolver;
     }
 
+    /**
+     * Creates bean of ModelMapper that can be injected in application
+     *
+     * @return instance of ModelMapper, that can be used to map attributes of some object
+     * to attributes of another object
+     */
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
 
+    /**
+     * Creates bean of MessageSource that can be injected in application
+     *
+     * @return instance of MessageSource which provides methods to access messages in file
+     * messages.properties on classpath.
+     */
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();

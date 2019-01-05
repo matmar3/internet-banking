@@ -10,6 +10,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
+ * Configures application security layer.
+ *
  * Date: 18.12.2018
  *
  * @author Martin Matas
@@ -18,6 +20,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * Configures security layer. All requests are permitted except two authorized sections that require authentication
+     * via login form. Specifies authentication process handlers and logout handler. For security exception
+     * defines which view should be displayed.
+     *
+     * @param http - instance of HttpSecurity that allows configuring web based security for specific http requests.
+     * @throws Exception - if an error occurs
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -41,6 +51,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedPage("/403");
     }
 
+    /**
+     * Creates password encoder bean that can be injected and used to encrypt text.
+     *
+     * @return instance of password encoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

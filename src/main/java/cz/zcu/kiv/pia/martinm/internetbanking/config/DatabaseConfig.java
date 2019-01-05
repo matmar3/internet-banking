@@ -19,6 +19,9 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 /**
+ * Configures data layer of application. Configuration class contains configuration of
+ * data source and persistence.
+ *
  * Date: 18.12.2018
  *
  * @author Martin Matas
@@ -29,6 +32,14 @@ import java.util.Properties;
 @PropertySource("classpath:db.properties")
 public class DatabaseConfig {
 
+    /**
+     * Configures entityManager with configuration stored in db.properties on classpath. EntityManager is configured to
+     * scan domain package of application that contains entities of data model.
+     *
+     * @param dataSource - configured instance of dataSource
+     * @param env - environment that provides access to configuration file
+     * @return configured entityManagerFactory
+     */
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, Environment env) {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
@@ -54,6 +65,14 @@ public class DatabaseConfig {
         return emf;
     }
 
+    /**
+     * Defines primary data source that will be used. Data source is configured via configuration stored
+     * in db.properties on classpath. Primary annotation is used due to multiple existing
+     * configurations of data source.
+     *
+     * @param env - environment that provides access to configuration file
+     * @return configured data source
+     */
     @Primary
     @Bean
     public DataSource dataSource(Environment env) {
@@ -65,6 +84,12 @@ public class DatabaseConfig {
         return dataSource;
     }
 
+    /**
+     * Creates new {@link JpaTransactionManager} instance from given entityManageFactory.
+     *
+     * @param entityManagerFactory - configured instance of entityManageFactory
+     * @return instance of PlatformTransactionManager
+     */
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory){
         return new JpaTransactionManager(entityManagerFactory);
