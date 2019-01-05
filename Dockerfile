@@ -1,17 +1,12 @@
-# Start with a base image containing Java runtime
+# Stage 1 - build the app
+FROM maven:3.6-jdk-8
+COPY . /build
+WORKDIR /build
+
+RUN mvn clean install -DskipTests
+
+#Stage 2 - Final image
 FROM openjdk:8-jdk-alpine
 
-# Add a volume pointing to /tmp
-VOLUME /tmp
-
-# Make port 8080 available to the world outside this container
-EXPOSE 8080
-
-# The application's jar file
-ARG JAR_FILE=target/internet-banking-0.0.1-SNAPSHOT.war
-
-# Add the application's jar to the container
-ADD ${JAR_FILE} internet-banking.war
-
-# Run the jar file
+COPY --from=0 /build/target/*.war internet-banking.war
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/internet-banking.war"]
