@@ -29,4 +29,4 @@
     </nav>
 </div>
 
-<jsp:include page="../logout_form.jsp" />
+<jsp:include page="../sections/logout_form.jsp" />

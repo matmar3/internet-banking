@@ -13,7 +13,7 @@
 
     <layout:put block="content">
 
-        <jsp:include page="../public_nav.jsp" />
+        <jsp:include page="../sections/public_nav.jsp" />
 
         <div class="container-fluid error-wrapper lb-content-wrapper">
             <div class="container h-100">

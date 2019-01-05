@@ -15,7 +15,7 @@
 
         <jsp:include page="admin_nav.jsp" />
 
-        <jsp:include page="../edit_profile_form.jsp" />
+        <jsp:include page="../sections/edit_profile_form.jsp" />
 
     </layout:put>
 

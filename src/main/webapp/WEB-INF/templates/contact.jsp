@@ -9,9 +9,12 @@
 
     <layout:put block="styles">
         <link rel="stylesheet" href="/css/contact.css">
+        <link rel="stylesheet" href="/css/services.css">
     </layout:put>
 
     <layout:put block="content">
+
+        <jsp:include page="sections/public_nav.jsp" />
 
         <div class="container-fluid lb-content-wrapper">
             <div class="container">
@@ -63,6 +66,8 @@
                 </div>
             </div>
         </div>
+
+        <jsp:include page="sections/services.jsp" />
 
     </layout:put>
 

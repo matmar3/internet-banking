@@ -1,0 +1,29 @@
+.services {
+    background-color: #646464;
+}
+
+.services > div {
+    padding: 3em;
+    text-align: center;
+}
+
+.services-heading {
+    font-size: 1.3em;
+    font-style: oblique;
+    color: white;
+}
+
+.services-items {
+    list-style: none;
+    padding-left: 0;
+}
+
+.services-items > li a {
+    color: #58B1FF;
+}
+
+.services-items > li a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+    cursor: pointer;
+}
