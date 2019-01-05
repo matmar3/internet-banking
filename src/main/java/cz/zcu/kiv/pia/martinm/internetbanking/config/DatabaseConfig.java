@@ -48,7 +48,7 @@ public class DatabaseConfig {
         emf.setPackagesToScan("cz.zcu.kiv.pia.martinm.internetbanking.domain");
 
         Properties properties = new Properties();
-        // Hibernate-specifiv configuration
+        // Hibernate-specific configuration
         properties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
         properties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
         properties.setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
