@@ -26,6 +26,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * Controller for handling requests pointing to internet banking section.
+ *
  * Date: 27.12.2018
  *
  * @author Martin Matas
@@ -34,11 +36,33 @@ import java.util.stream.Collectors;
 @RequestMapping("/ib")
 public class InternetBankingController extends GenericController {
 
+    /**
+     * Unauthorized user manager
+     */
     private UserManager userManager;
+
+    /**
+     * Unauthorized account manager
+     */
     private AccountManager accountManager;
+
+    /**
+     * Unauthorized transaction template manager
+     */
     private TransactionTemplateManager templateManager;
+
+    /**
+     * Instance of tool ModelMapper
+     */
     private ModelMapper modelMapper;
 
+    /**
+     * Creates instance of InternetBankingController and initialize required services.
+     * @param userManager - unauthorized user manager
+     * @param accountManager - unauthorized account manager
+     * @param templateManager - unauthorized transaction template manager
+     * @param modelMapper - instance of model mapper
+     */
     public InternetBankingController(
             UserManager userManager,
             AccountManager accountManager,
@@ -52,6 +76,12 @@ public class InternetBankingController extends GenericController {
 
     /* ---------------- ACCOUNT ------------------- */
 
+    /**
+     * Handles request to welcoming page of internet banking section.
+     *
+     * @param model - ui model attributes
+     * @return name of view
+     */
     @RequestMapping({"/", "/index"})
     public String showIBOverview(Model model) {
         User user = userManager.getCurrentUser();
@@ -66,6 +96,13 @@ public class InternetBankingController extends GenericController {
         return "ib/overview";
     }
 
+    /**
+     * Handles data processing for creating account.
+     *
+     * @param newAccount - created account (form output)
+     * @param result - validation result
+     * @return name of view
+     */
     @PostMapping("/create-account")
     public String createAccountHandler(@ModelAttribute("newAccount") AccountDto newAccount, BindingResult result) {
         if (result.hasErrors()) {
@@ -78,6 +115,15 @@ public class InternetBankingController extends GenericController {
         return redirect("/ib/index");
     }
 
+    /**
+     * Handles requests to transaction history of some account.
+     *
+     * @param model - ui model attributes
+     * @param id - identifier of account entity
+     * @param page - page number
+     * @param size - count of transactions per page
+     * @return name of view
+     */
     @RequestMapping("/account/{id}")
     public String showTransactionsRelatedToAuthorizedUser(
             Model model, @PathVariable String id,
@@ -125,6 +171,12 @@ public class InternetBankingController extends GenericController {
 
     /* ---------------- TRANSACTION ------------------- */
 
+    /**
+     * Handles request to page with form for creating transaction.
+     *
+     * @param model - ui model attributes
+     * @return name of view
+     */
     @RequestMapping("/create-transaction")
     public String showTransactionForm(Model model) {
         User user = userManager.getCurrentUser();
@@ -140,6 +192,15 @@ public class InternetBankingController extends GenericController {
         return "ib/create_transaction";
     }
 
+    /**
+     * Handles data processing of form for creating transaction. Created transaction is validated
+     * via annotations in DTO. Errors will be stored in instance of BindingResult.
+     *
+     * @param model - ui model attributes
+     * @param newTransaction - created transaction
+     * @param result - validation result
+     * @return name of view
+     */
     @PostMapping("/create-transaction")
     public String createTransactionHandler(Model model, @Valid @ModelAttribute("newTransaction") TransactionDto newTransaction, BindingResult result) {
         User user = userManager.getCurrentUser();
@@ -159,6 +220,12 @@ public class InternetBankingController extends GenericController {
 
     /* ---------------- USER ------------------- */
 
+    /**
+     * Handles request for user profile page.
+     *
+     * @param model - holder for model attributes
+     * @return name of view
+     */
     @RequestMapping("/profile")
     public String showCurrentUserProfile(Model model) {
         User user = userManager.getCurrentUser();
@@ -172,6 +239,13 @@ public class InternetBankingController extends GenericController {
         return "ib/user_profile";
     }
 
+    /**
+     * Handles data processing of form for editing user.
+     *
+     * @param modifiedUser - modified user (form output)
+     * @param result - validation result
+     * @return name of view
+     */
     @PostMapping("/profile")
     public String modifyUserHandler(@ModelAttribute("modifiedUser") UserDto modifiedUser, BindingResult result) {
         if (result.hasErrors()) {
@@ -186,6 +260,12 @@ public class InternetBankingController extends GenericController {
 
     /* ---------------- TEMPLATES ------------------- */
 
+    /**
+     * Handles requests to page with templates related to current user.
+     *
+     * @param model - ui model attributes
+     * @return name of view
+     */
     @RequestMapping(value = "/templates")
     public String showAllTemplates(Model model) {
         User user = userManager.getCurrentUser();
@@ -201,6 +281,14 @@ public class InternetBankingController extends GenericController {
         return "ib/templates";
     }
 
+    /**
+     * Handles requests to page with form for creating transaction template.
+     *
+     * @param model - ui model attributes
+     * @param newTemplate - created template
+     * @param result - validation result
+     * @return name of view
+     */
     @PostMapping(value = "/templates/create")
     public String createTransactionTemplateHandler(
             Model model, @ModelAttribute("newTemplate") TransactionTemplateDto newTemplate, BindingResult result) {
@@ -218,6 +306,13 @@ public class InternetBankingController extends GenericController {
         return redirect("/ib/templates");
     }
 
+    /**
+     * Handles requests to page with template detail.
+     *
+     * @param model - ui model attribute
+     * @param id - identifier of transaction template entity
+     * @return name of view
+     */
     @RequestMapping("/templates/{id}")
     public String modifyTransactionTemplate(Model model, @PathVariable String id) {
         if (id == null) return "errorPages/400";
@@ -244,9 +339,17 @@ public class InternetBankingController extends GenericController {
         return "ib/edit_template";
     }
 
+    /**
+     * Handles requests to page with form for editing transaction template.
+     *
+     * @param model - ui model attributes
+     * @param modifyTemplate - modified template
+     * @param result - validation result
+     * @return name of view
+     */
     @PostMapping(value = "/templates/modify")
     public String modifyTransactionTemplateHandler(
-            Model model, @ModelAttribute("modifyTemplate") TransactionTemplateDto newTemplate, BindingResult result) {
+            Model model, @ModelAttribute("modifyTemplate") TransactionTemplateDto modifyTemplate, BindingResult result) {
         User user = userManager.getCurrentUser();
         AuthorizedTemplateManager atm = templateManager.authorize(user);
 
@@ -257,10 +360,16 @@ public class InternetBankingController extends GenericController {
             return "ib/edit_template";
         }
 
-        atm.editTemplate(newTemplate);
+        atm.editTemplate(modifyTemplate);
         return redirect("/ib/templates");
     }
 
+    /**
+     * Handles request to page with template detail.
+     *
+     * @param id - identifier of transaction template entity
+     * @return transaction template in JSON format or error message as JSON response
+     */
     @RequestMapping(value = "/templates/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String retrieveTransactionTemplate(@PathVariable String id) {
@@ -289,6 +398,12 @@ public class InternetBankingController extends GenericController {
         }
     }
 
+    /**
+     * Handles request for removing transaction template.
+     *
+     * @param id - identifier of transaction template entity.
+     * @return name of view
+     */
     @RequestMapping("/remove/template/{id}")
     public String createTransactionTemplate(@PathVariable String id) {
         User user = userManager.getCurrentUser();
@@ -310,6 +425,12 @@ public class InternetBankingController extends GenericController {
 
     /* ---------------- AUXILIARY METHODS ------------------- */
 
+    /**
+     * Transform given set into sorted map of accounts. Accounts are sorted by account number.
+     *
+     * @param accounts - set of accounts
+     * @return sorted map of accounts
+     */
     private Map<String, String> getPossibleAccounts(Set<Account> accounts) {
         TreeMap<String, String> options = new TreeMap<>();
         options.put("", "--");
@@ -320,6 +441,12 @@ public class InternetBankingController extends GenericController {
         return options;
     }
 
+    /**
+     * Returns sorted map of currencies that can be used. Currencies are sorted
+     * by currency code.
+     *
+     * @return sorted map of currencies.
+     */
     private Map<String, String> getPossibleCurrencies() {
         TreeMap<String, String> options = new TreeMap<>();
         options.put("", "--");
