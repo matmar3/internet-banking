@@ -16,6 +16,6 @@ services:
       - "8080:8080"
     environment:
       - database.driverClassName=com.mysql.cj.jdbc.Driver
-      - database.url=jdbc:mysql://database:3306/InternetBankingDB
+      - database.url=jdbc:mysql://database:3306/InternetBankingDB?characterEncoding=utf8
       - database.username=root
       - database.password=root
