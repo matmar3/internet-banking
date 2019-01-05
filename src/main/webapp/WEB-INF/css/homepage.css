@@ -25,6 +25,31 @@
     color: #fff;
 }
 
+.block-section-title {
+    padding: 10px 0;
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.block-section-content {
+    text-align: justify;
+    padding: 5px;
+}
+
+.exchangeRateLabel {
+    padding-right: 20px;
+    font-weight: 500;
+}
+
+.exchangeRate {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.bank-info p {
+    text-align: justify;
+}
+
 .services {
     background-color: #646464;
 }
@@ -45,11 +70,11 @@
     padding-left: 0;
 }
 
-.services-items > li {
+.services-items > li a {
     color: #58B1FF;
 }
 
-.services-items > li:hover {
+.services-items > li a:hover {
     color: #0056b3;
     text-decoration: underline;
     cursor: pointer;

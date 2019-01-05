@@ -2,6 +2,10 @@
     padding: 0;
 }
 
+.public-nav {
+    font-size: 1.2em;
+}
+
 .logo {
     width: 60px;
     height: 45px;
@@ -10,6 +14,7 @@
 .lb-content-wrapper {
     padding: 2em 0;
     background-color: #E4F3FC;
+    min-height: 70vh;
 }
 
 #flash-message {

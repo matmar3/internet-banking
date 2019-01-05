@@ -3,7 +3,7 @@
 
 <div class="container">
     <nav>
-        <div class="nav">
+        <div class="nav public-nav">
             <ul class="nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="#"><spring:message code="homepage.nav.loans" /></a>
@@ -15,7 +15,7 @@
                     <a class="nav-link" href="#"><spring:message code="homepage.nav.insurance" /></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><spring:message code="homepage.nav.contact" /></a>
+                    <a class="nav-link" href="/contact"><spring:message code="homepage.nav.contact" /></a>
                 </li>
             </ul>
             <ul class="nav">
