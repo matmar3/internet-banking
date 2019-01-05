@@ -40,6 +40,7 @@ public class DatabaseConfig {
         // Hibernate-specifiv configuration
         properties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
         properties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
         properties.setProperty("hibernate.validator.apply_to_ddl", env.getProperty("hibernate.validator.apply_to_ddl"));
         // Hibernate-C3P0 configuration
         properties.setProperty("connection.provider_class", env.getProperty("connection.provider_class"));
