@@ -23,6 +23,14 @@ public class Account implements DataTransferObject<Integer> {
     public Account() {
     }
 
+    /**
+     * Creates new account.
+     *
+     * @param currency - account's currency
+     * @param accountNumber - account number
+     * @param cardNumber - card number
+     * @param user - account's owner
+     */
     public Account(String currency, String accountNumber, String cardNumber, User user) {
         this.currency = currency;
         this.accountNumber = accountNumber;

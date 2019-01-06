@@ -1,6 +1,8 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.domain;
 
 /**
+ * Enumeration of currencies which are supported in this app.
+ *
  * Date: 02.01.2019
  *
  * @author Martin Matas

@@ -37,6 +37,14 @@ public class User implements UserDetails, DataTransferObject<Integer> {
 
     }
 
+    /**
+     * Creates new user.
+     *
+     * @param firstName - user's first name
+     * @param lastName - user's last name
+     * @param birthNumber - user's birth number
+     * @param email - user's email
+     */
     public User(String firstName, String lastName, String birthNumber, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -211,6 +219,12 @@ public class User implements UserDetails, DataTransferObject<Integer> {
         return mobileNumber;
     }
 
+    /**
+     * Returns composed address from street, houseNumber, zipCode and city. If any of these attributes is null,
+     * method returns empty string.
+     *
+     * @return address or empty string
+     */
     @Transient
     public String getAddress() {
         if (!(isNullOrEmpty(street) && isNullOrEmpty(houseNumber) && isNullOrEmpty(zipCode) && isNullOrEmpty(city))) {
@@ -257,6 +271,14 @@ public class User implements UserDetails, DataTransferObject<Integer> {
         this.id = id;
     }
 
+    /**
+     * Set user's address.
+     *
+     * @param street - street
+     * @param houseNumber - house number
+     * @param zipCode - zip code
+     * @param city - cite
+     */
     public void setAddress(String street, String houseNumber, String zipCode, String city) {
         this.street = street;
         this.houseNumber = houseNumber;
@@ -292,6 +314,13 @@ public class User implements UserDetails, DataTransferObject<Integer> {
         return accounts;
     }
 
+    /**
+     * Determines if given string is null or empty. If any of both is true,
+     * method returns true.
+     *
+     * @param str - any string
+     * @return true if given string is null or empty
+     */
     private boolean isNullOrEmpty(String str) {
         if(str != null && !str.isEmpty())
             return false;

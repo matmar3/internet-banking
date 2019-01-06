@@ -14,6 +14,7 @@ import java.io.Serializable;
 public interface DataTransferObject<PK extends Serializable> {
 
     /**
+     * Returns primary key of entity.
      *
      * @return  primary key of the instance
      */
