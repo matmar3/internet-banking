@@ -1,9 +1,18 @@
+/**
+ * Loads template asynchronously into the form based on selected value.
+ */
 $("#transactionTemplate").change(function () {
    var value = $(this).val();
 
    retrieveTemplate(value);
 });
 
+/**
+ * Retrieve template from server by given identifier.
+ *
+ * @param id - template id
+ * @returns {boolean}
+ */
 function retrieveTemplate(id) {
     if (!id) {
        clearForm();
@@ -24,6 +33,11 @@ function retrieveTemplate(id) {
     });
 }
 
+/**
+ * Fill form with retrieved template.
+ *
+ * @param transactionTemplate - transaction template
+ */
 function fillForm(transactionTemplate) {
     for (var property in transactionTemplate) {
         if (transactionTemplate.hasOwnProperty(property)) {
@@ -32,6 +46,9 @@ function fillForm(transactionTemplate) {
     }
 }
 
+/**
+ * Clear form values.
+ */
 function clearForm() {
     $("form#newTransaction :input").each(function(){
         $(this).val('');
