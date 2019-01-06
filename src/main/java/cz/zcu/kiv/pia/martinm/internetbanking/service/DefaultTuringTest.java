@@ -1,6 +1,8 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.service;
 
 /**
+ * Implementation of TuringTest, for more details see {@link TuringTest}.
+ *
  * Date: 28.12.2018
  *
  * @author Martin Matas

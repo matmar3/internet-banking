@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import java.util.Locale;
 
 /**
+ * Implementation of MessageProvider, for more details see {@link MessageProvider}.
+ *
  * Date: 02.01.2019
  *
  * @author Martin Matas

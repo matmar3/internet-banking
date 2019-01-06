@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
+ * Implementation of TransactionTemplateManager, for more details see {@link TransactionTemplateManager}.
+ *
  * Date: 03.01.2019
  *
  * @author Martin Matas
@@ -34,6 +36,9 @@ public class DefaultTemplateManager implements  TransactionTemplateManager {
         return new DefaultAuthorizedTemplateManager(user);
     }
 
+    /**
+     * Implementation of AuthorizedTemplateManager, for more details see {@link AuthorizedTemplateManager}.
+     */
     private class DefaultAuthorizedTemplateManager implements AuthorizedTemplateManager {
 
         private User currentUser;

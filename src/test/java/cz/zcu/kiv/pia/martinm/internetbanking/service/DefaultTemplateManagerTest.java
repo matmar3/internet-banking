@@ -26,6 +26,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
+ * Unit test for {@link DefaultTemplateManager}.
+ *
  * Date: 04.01.2019
  *
  * @author Martin Matas

@@ -30,6 +30,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
+ * Unit test for {@link DefaultAccountManager}.
+ *
  * Date: 03.01.2019
  *
  * @author Martin Matas

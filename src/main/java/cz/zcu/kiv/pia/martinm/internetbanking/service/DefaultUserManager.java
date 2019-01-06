@@ -16,6 +16,9 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 /**
+ * Implementation of UserManager and UserDetailsService,
+ * for more details see {@link TuringTest} or {@link UserDetailsService}.
+ *
  * Date: 23.12.2018
  *
  * @author Martin Matas
@@ -62,6 +65,9 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
         return new DefaultAuthorizedUserManager(user);
     }
 
+    /**
+     * Implementation of AuthorizedUserManager, for more details see {@link AuthorizedUserManager}.
+     */
     private class DefaultAuthorizedUserManager implements AuthorizedUserManager {
 
         private User currentUser;

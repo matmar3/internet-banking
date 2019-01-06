@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
+ * Implementation of TuringTestProvider, for more details see {@link TuringTestProvider}.
+ *
  * Date: 28.12.2018
  *
  * @author Martin Matas

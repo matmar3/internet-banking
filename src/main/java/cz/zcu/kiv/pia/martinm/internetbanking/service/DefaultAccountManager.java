@@ -21,6 +21,8 @@ import java.util.Currency;
 import java.util.Date;
 
 /**
+ * Implementation of AccountManager, for more details see {@link AccountManager}.
+ *
  * Date: 26.12.2018
  *
  * @author Martin Matas
@@ -48,6 +50,9 @@ public class DefaultAccountManager implements AccountManager {
         return new DefaultAuthorizedAccountManager(user);
     }
 
+    /**
+     * Implementation of AuthorizedAccountManager, for more details see {@link AuthorizedAccountManager}.
+     */
     private class DefaultAuthorizedAccountManager implements AuthorizedAccountManager {
 
         private User currentUser;

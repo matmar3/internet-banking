@@ -25,6 +25,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
+ * Unit test for {@link DefaultUserManager}.
+ *
  * Date: 03.01.2019
  *
  * @author Martin Matas
