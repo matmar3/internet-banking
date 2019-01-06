@@ -158,6 +158,7 @@ public class DefaultAccountManager implements AccountManager {
         @Override
         public boolean isTransactionValid(TransactionDto transaction, BindingResult result) {
             Account sender = accountDao.findByAccountNumber(transaction.getSenderAccountNumber());
+            Account receiver = accountDao.findByAccountNumber(transaction.getReceiverAccountNumber());
             boolean valid = true;
 
             if (sender == null) {
@@ -168,6 +169,13 @@ public class DefaultAccountManager implements AccountManager {
                 throw new AccessDeniedException(
                         messageProvider.getMessage("error.accessDenied.performTransaction.differentAccount")
                 );
+            }
+
+            if (receiver == null && transaction.getReceiverAccountNumber().contains("/" + Bank.CODE)) {
+                result.addError(
+                        new FieldError("newTransaction", "receiverAccountNumber", messageProvider.getMessage("error.fieldMessage.receiverAccountNotFound"))
+                );
+                valid = false;
             }
 
             if (transaction.getSenderAccountNumber().equals(transaction.getReceiverAccountNumber())) {

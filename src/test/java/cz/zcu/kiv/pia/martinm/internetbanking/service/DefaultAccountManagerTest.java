@@ -1,5 +1,6 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.service;
 
+import cz.zcu.kiv.pia.martinm.internetbanking.Bank;
 import cz.zcu.kiv.pia.martinm.internetbanking.EntityNotFoundException;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.AccountDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
@@ -221,15 +222,18 @@ public class DefaultAccountManagerTest {
     @Test(expected = AccessDeniedException.class)
     public void isTransactionValid_transactionPerformedAsAdmin() {
         AuthorizedAccountManager aam = accountManager.authorize(admin);
-        final String senderAccountNumber = "1020304050/2700";
+        final String senderAccountNumber = "1020304050/" + Bank.CODE;
+        final String receiverAccountNumber = "1020456230/1000";
 
         Account account = new Account("CZK", senderAccountNumber, "1020304050607080", customer);
         TransactionDto newTransaction = new TransactionDto();
         newTransaction.setSenderAccountNumber(senderAccountNumber);
+        newTransaction.setReceiverAccountNumber(receiverAccountNumber);
 
         when(accountDao.findByAccountNumber(senderAccountNumber)).thenReturn(account);
+        when(accountDao.findByAccountNumber(receiverAccountNumber)).thenReturn(null);
         aam.isTransactionValid(newTransaction, null);
-        verify(accountDao, times(1)).findByAccountNumber(senderAccountNumber);
+        verify(accountDao, times(2)).findByAccountNumber(senderAccountNumber);
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -248,7 +252,7 @@ public class DefaultAccountManagerTest {
     @Test
     public void isTransactionValid_receiverIsSameAccount() {
         AuthorizedAccountManager aam = accountManager.authorize(customer);
-        final String accountNumber = "1020304050/2700";
+        final String accountNumber = "1020304050/" + Bank.CODE;
         final BigDecimal amount = new BigDecimal(1);
 
         Account account = new Account("CZK", accountNumber, "1020304050607080", customer);
@@ -258,14 +262,40 @@ public class DefaultAccountManagerTest {
         newTransaction.setReceiverAccountNumber(accountNumber);
         newTransaction.setSentAmount(amount);
 
-        when(accountDao.findByAccountNumber(accountNumber)).thenReturn(account);
+        when(accountDao.findByAccountNumber(accountNumber)).thenReturn(account).thenReturn(account);
         BindingResult bindingResult = mock(BindingResult.class);
         bindingResult.addError(null);
 
         boolean result = aam.isTransactionValid(newTransaction, bindingResult);
         assertThat(result, is(false));
 
-        verify(accountDao, times(1)).findByAccountNumber(accountNumber);
+        verify(accountDao, times(2)).findByAccountNumber(accountNumber);
+        verify(bindingResult, times(1)).addError(null);
+    }
+
+    @Test
+    public void isTransactionValid_receiverIsFromThisBankButNotExists() {
+        AuthorizedAccountManager aam = accountManager.authorize(customer);
+        final String senderAccountNumber = "1020304050/" + Bank.CODE;
+        final String receiverAccountNumber = "1020304010/" + Bank.CODE;
+        final BigDecimal amount = new BigDecimal(1);
+
+        Account account = new Account("CZK", senderAccountNumber, "1020304050607080", customer);
+        account.setBalance(amount);
+        TransactionDto newTransaction = new TransactionDto();
+        newTransaction.setSenderAccountNumber(senderAccountNumber);
+        newTransaction.setReceiverAccountNumber(receiverAccountNumber);
+        newTransaction.setSentAmount(amount);
+
+        when(accountDao.findByAccountNumber(senderAccountNumber)).thenReturn(account);
+        when(accountDao.findByAccountNumber(receiverAccountNumber)).thenReturn(null);
+        BindingResult bindingResult = mock(BindingResult.class);
+        bindingResult.addError(null);
+
+        boolean result = aam.isTransactionValid(newTransaction, bindingResult);
+        assertThat(result, is(false));
+
+        verify(accountDao, times(2)).findByAccountNumber(any(String.class));
         verify(bindingResult, times(1)).addError(null);
     }
 
