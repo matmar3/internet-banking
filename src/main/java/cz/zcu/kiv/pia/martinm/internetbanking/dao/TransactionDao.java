@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
+ * Transaction data access object.
+ *
  * Date: 28.12.2018
  *
  * @author Martin Matas
@@ -17,6 +19,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionDao extends JpaRepository<Transaction, Integer> {
 
+    /**
+     * Finds all transactions with given account as sender or receiver. Result set is influenced by
+     * pageable attribute which defines size of result set and offset.
+     *
+     * @param account - sender or receiver of transactions
+     * @param pageable - defines size of result set and offset where results set starts
+     * @return one page of transactions
+     */
     @Query("SELECT t FROM Transaction t WHERE t.sender = :account OR t.receiver = :account ORDER BY t.dueDate DESC")
     Page<Transaction> findAllByAccount(@Param("account") Account account, Pageable pageable);
 
