@@ -26,7 +26,7 @@ import java.util.TreeMap;
 class PublicPagesController extends GenericController {
 
     /**
-     * Unauthorized user manager
+     * user manager
      */
     private UserManager um;
 
@@ -37,7 +37,7 @@ class PublicPagesController extends GenericController {
 
     /**
      * Creates instance of PublicPagesController and initialize required services.
-     * @param um - unauthorized user manager
+     * @param um - user manager
      * @param messageProvider - instance of message provider
      */
     public PublicPagesController(UserManager um, MessageProvider messageProvider) {

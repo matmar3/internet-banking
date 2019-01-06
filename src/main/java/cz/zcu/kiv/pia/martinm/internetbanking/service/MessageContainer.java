@@ -9,11 +9,22 @@ package cz.zcu.kiv.pia.martinm.internetbanking.service;
  */
 public class MessageContainer {
 
+    /**
+     * Defines message type, for more details se {@link Type}.
+     */
     private Type type;
 
+    /**
+     * Content of this message.
+     */
     private String content;
 
-
+    /**
+     * Creates new message.
+     *
+     * @param type - message type
+     * @param content - message content
+     */
     public MessageContainer(Type type, String content) {
         this.type = type;
         this.content = content;
@@ -40,6 +51,9 @@ public class MessageContainer {
          INFO       ("info"),
          DARK       ("dark");
 
+        /**
+         * CSS style suffix
+         */
         private final String cssAlertSuffix;
 
         Type (String cssAlertSuffix) {

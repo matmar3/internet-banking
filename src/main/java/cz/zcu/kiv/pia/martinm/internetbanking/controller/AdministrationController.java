@@ -30,7 +30,7 @@ import java.util.List;
 public class AdministrationController extends GenericController {
 
     /**
-     * Unauthorized userManager.
+     * userManager.
      */
     private UserManager userManager;
 
@@ -46,7 +46,7 @@ public class AdministrationController extends GenericController {
 
     /**
      * Creates instance of AdministrationController and initialize required services.
-     * @param um - unauthorized user manager
+     * @param um - user manager
      * @param mm - model mapper
      * @param ttp - instance of test provider
      */

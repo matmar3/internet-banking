@@ -37,17 +37,17 @@ import java.util.stream.Collectors;
 public class InternetBankingController extends GenericController {
 
     /**
-     * Unauthorized user manager
+     * user manager
      */
     private UserManager userManager;
 
     /**
-     * Unauthorized account manager
+     * account manager
      */
     private AccountManager accountManager;
 
     /**
-     * Unauthorized transaction template manager
+     * transaction template manager
      */
     private TransactionTemplateManager templateManager;
 
@@ -58,9 +58,9 @@ public class InternetBankingController extends GenericController {
 
     /**
      * Creates instance of InternetBankingController and initialize required services.
-     * @param userManager - unauthorized user manager
-     * @param accountManager - unauthorized account manager
-     * @param templateManager - unauthorized transaction template manager
+     * @param userManager - user manager
+     * @param accountManager - account manager
+     * @param templateManager - transaction template manager
      * @param modelMapper - instance of model mapper
      */
     public InternetBankingController(
