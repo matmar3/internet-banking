@@ -1,0 +1,1 @@
+web: java -Djava.security.egd=file:/dev/./urandom -jar -Dserver.port=$PORT target/internet-banking-0.0.1-SNAPSHOT.war
