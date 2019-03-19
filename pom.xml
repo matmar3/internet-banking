@@ -107,11 +107,30 @@
 
 	<build>
 		<plugins>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<tagNameFormat>v@{project.version}</tagNameFormat>
+					<arguments>-DskipTests -Darguments=-DskipTests -Dmaven.javadoc.skip=true</arguments>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
+
+	<scm>
+        <connection>scm:git:https://matmar3@bitbucket.org/matmar3/internet-banking.git</connection>
+        <developerConnection>scm:git:https://matmar3@bitbucket.org/matmar3/internet-banking.git</developerConnection>
+        <url>https://bitbucket.org/matmar3/internet-banking</url>
+        <tag>HEAD</tag>
+    </scm>
 
 </project>
