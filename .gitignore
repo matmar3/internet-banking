@@ -6,3 +6,5 @@
 # Maven
 log/
 target/
+release.properties
+pom.xml.releaseBackup
