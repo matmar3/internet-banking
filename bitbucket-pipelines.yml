@@ -6,3 +6,8 @@ pipelines:
     - step:
         script:
           - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD:master
+  tagRoutine:
+    - step:
+        image: maven:3.3.9-jdk-8
+        script:
+          - mvn clean release:prepare
