@@ -1,5 +1,6 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -157,30 +158,35 @@ public class User implements UserDetails, DataTransferObject<Integer> {
         Spring Security (UserDetails)
      */
 
+    @JsonIgnore
     @Override
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(role));
     }
 
+    @JsonIgnore
     @Override
     @Transient
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     @Transient
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     @Transient
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return enabled;
@@ -249,20 +255,24 @@ public class User implements UserDetails, DataTransferObject<Integer> {
         return city;
     }
 
+    @JsonIgnore
     public Boolean getEnabled() {
         return enabled;
     }
 
+    @JsonIgnore
     @Override
     public String getPassword() {
         return password;
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return username;
     }
 
+    @JsonIgnore
     public String getRole() {
         return role;
     }
@@ -310,6 +320,7 @@ public class User implements UserDetails, DataTransferObject<Integer> {
         this.enabled = enabled;
     }
 
+    @JsonIgnore
     public Set<Account> getAccounts() {
         return accounts;
     }
