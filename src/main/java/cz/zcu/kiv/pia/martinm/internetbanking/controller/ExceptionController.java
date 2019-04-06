@@ -38,6 +38,17 @@ public class ExceptionController {
     }
 
     /**
+     * Handling exception when access is denied.
+     *
+     * @return view name of error page
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleError403() {
+        return "errorPages/403";
+    }
+
+    /**
      * Handles exception when server cannot process the request
      * due to an apparent client error e.g. wrong request syntax.
      *

@@ -132,6 +132,6 @@ public class RESTController {
 			transactions = aam.findAllTransactionsByAccount(account, pageable);
 		}
 
-		return new ResponseEntity<>(transactions.get().collect(Collectors.toList()), HttpStatus.OK);
+		return new ResponseEntity<>(transactions.getContent(), HttpStatus.OK);
 	}
 }

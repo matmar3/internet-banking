@@ -1,5 +1,7 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import cz.zcu.kiv.pia.martinm.internetbanking.service.CurrencyUtils;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -78,6 +80,7 @@ public class Account implements DataTransferObject<Integer> {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "User_ID")
+    @JsonIgnore
         private User user;
 
     // Mappings
