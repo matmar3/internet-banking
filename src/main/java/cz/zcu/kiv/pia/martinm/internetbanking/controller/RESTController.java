@@ -134,4 +134,26 @@ public class RESTController {
 
 		return new ResponseEntity<>(transactions.getContent(), HttpStatus.OK);
 	}
+
+    @RequestMapping("/account/{id}/transactions/count")
+    public ResponseEntity<Long> returnCountOfTransactionsRelatedToAuthorizedUser(@PathVariable String id) {
+
+        if (id == null) return ResponseEntity.notFound().build();
+
+        int accountId;
+
+        try {
+            accountId = new Integer(id);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        User user = userManager.getCurrentUser();
+        AuthorizedAccountManager aam = accountManager.authorize(user);
+        Pageable pageable = Pageable.unpaged();
+        Account account = aam.findAccountById(accountId);
+        Page<Transaction> transactions = aam.findAllTransactionsByAccount(account, pageable);
+
+        return new ResponseEntity<>(transactions.getTotalElements(), HttpStatus.OK);
+    }
 }
