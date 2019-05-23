@@ -1,12 +1,12 @@
 package cz.zcu.kiv.pia.martinm.internetbanking.controller;
 
+import com.google.gson.Gson;
+import cz.zcu.kiv.pia.martinm.internetbanking.controller.dto.TransactionDto;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Account;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.Transaction;
+import cz.zcu.kiv.pia.martinm.internetbanking.domain.TransactionTemplate;
 import cz.zcu.kiv.pia.martinm.internetbanking.domain.User;
-import cz.zcu.kiv.pia.martinm.internetbanking.service.AccountManager;
-import cz.zcu.kiv.pia.martinm.internetbanking.service.AuthorizedAccountManager;
-import cz.zcu.kiv.pia.martinm.internetbanking.service.TransactionTemplateManager;
-import cz.zcu.kiv.pia.martinm.internetbanking.service.UserManager;
+import cz.zcu.kiv.pia.martinm.internetbanking.service.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -155,5 +155,66 @@ public class RESTController {
         Page<Transaction> transactions = aam.findAllTransactionsByAccount(account, pageable);
 
         return new ResponseEntity<>(transactions.getTotalElements(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/account/{id}/templates")
+    public ResponseEntity<List<TransactionTemplate>> returnUserTemplates(@PathVariable String id) {
+
+        if (id == null) return ResponseEntity.notFound().build();
+
+        int accountId;
+
+        try {
+            accountId = new Integer(id);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        User user = userManager.getCurrentUser();
+        AuthorizedTemplateManager atm = templateManager.authorize(user);
+        AuthorizedAccountManager aam = accountManager.authorize(user);
+        Account account = aam.findAccountById(accountId);
+
+        if (account != null) {
+            List<TransactionTemplate> templates = atm.findAllTemplatesByUser(user);
+            return new ResponseEntity<>(templates, HttpStatus.OK);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @RequestMapping(
+            value = "/account/{id}/transactions/create",
+            method = RequestMethod.POST,
+            consumes = "text/plain")
+    public ResponseEntity<Boolean> process(@PathVariable String id, @RequestBody String transaction) {
+
+        if (id == null) return ResponseEntity.notFound().build();
+
+        int accountId;
+
+        try {
+            accountId = new Integer(id);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Gson gson = new Gson();
+        User user = userManager.getCurrentUser();
+        AuthorizedAccountManager aam = accountManager.authorize(user);
+        Account account = aam.findAccountById(accountId);
+
+        if (account != null) {
+            try {
+                TransactionDto newTransaction = gson.fromJson(transaction, TransactionDto.class);
+                aam.performTransaction(newTransaction);
+
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>(false, HttpStatus.OK);
+            }
+        }
+
+        return ResponseEntity.notFound().build();
     }
 }
