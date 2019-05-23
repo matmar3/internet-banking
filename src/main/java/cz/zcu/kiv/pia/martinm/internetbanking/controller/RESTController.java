@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -157,64 +159,35 @@ public class RESTController {
         return new ResponseEntity<>(transactions.getTotalElements(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/account/{id}/templates")
-    public ResponseEntity<List<TransactionTemplate>> returnUserTemplates(@PathVariable String id) {
-
-        if (id == null) return ResponseEntity.notFound().build();
-
-        int accountId;
-
-        try {
-            accountId = new Integer(id);
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().build();
-        }
-
+    @RequestMapping(value = "/templates")
+    public ResponseEntity<List<TransactionTemplate>> returnUserTemplates() {
         User user = userManager.getCurrentUser();
         AuthorizedTemplateManager atm = templateManager.authorize(user);
-        AuthorizedAccountManager aam = accountManager.authorize(user);
-        Account account = aam.findAccountById(accountId);
 
-        if (account != null) {
-            List<TransactionTemplate> templates = atm.findAllTemplatesByUser(user);
-            return new ResponseEntity<>(templates, HttpStatus.OK);
-        }
-
-        return ResponseEntity.notFound().build();
+        List<TransactionTemplate> templates = atm.findAllTemplatesByUser(user);
+        return new ResponseEntity<>(templates, HttpStatus.OK);
     }
 
     @RequestMapping(
-            value = "/account/{id}/transactions/create",
+            value = "/create-transaction",
             method = RequestMethod.POST,
-            consumes = "text/plain")
-    public ResponseEntity<Boolean> process(@PathVariable String id, @RequestBody String transaction) {
-
-        if (id == null) return ResponseEntity.notFound().build();
-
-        int accountId;
-
-        try {
-            accountId = new Integer(id);
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().build();
-        }
-
+            consumes = "application/json")
+    public ResponseEntity<Boolean> process(@RequestBody String transaction, BindingResult result) {
         Gson gson = new Gson();
         User user = userManager.getCurrentUser();
         AuthorizedAccountManager aam = accountManager.authorize(user);
-        Account account = aam.findAccountById(accountId);
 
-        if (account != null) {
-            try {
-                TransactionDto newTransaction = gson.fromJson(transaction, TransactionDto.class);
-                aam.performTransaction(newTransaction);
+        try {
+            TransactionDto newTransaction = gson.fromJson(transaction, TransactionDto.class);
 
-                return new ResponseEntity<>(true, HttpStatus.OK);
-            } catch (Exception e) {
+            if (!aam.isTransactionValid(newTransaction, result)) {
                 return new ResponseEntity<>(false, HttpStatus.OK);
             }
-        }
 
-        return ResponseEntity.notFound().build();
+            aam.performTransaction(newTransaction);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        }
     }
 }
