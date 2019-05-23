@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>cz.zcu.kiv.pia.martinm</groupId>
 	<artifactId>internet-banking</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.3</version>
 	<packaging>war</packaging>
 	<name>Internet Banking</name>
 	<description>InternetBanking application for PIA</description>
@@ -135,7 +135,7 @@
         <connection>scm:git:https://matmar3@bitbucket.org/matmar3/internet-banking.git</connection>
         <developerConnection>scm:git:https://matmar3@bitbucket.org/matmar3/internet-banking.git</developerConnection>
         <url>https://bitbucket.org/matmar3/internet-banking</url>
-        <tag>HEAD</tag>
+        <tag>v0.0.3</tag>
     </scm>
 
 </project>
