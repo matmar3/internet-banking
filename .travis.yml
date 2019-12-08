@@ -1,11 +1,10 @@
 language: java
-dist: trusty
 
 jdk:
   - openjdk8
 
 deploy:
-  provider: script
-  script: mvn test
-  on:
-    branch: master
+  provider: heroku
+  app: internet-banking-app
+  api_key:
+    secure: "TzrY73rnRT27FleAIoGfZnoLIzCGJBdH3hVPsyzBvEe2b/TDCnxFPN4ZaBkGdKN6GeGO/JMvxFcenDA36jm8etknOZRVqHWv4tJmePwX/0kHbG3hAgrjIjPyQvUZ6uFO/uS5Qp5GkqhruqHV+2A6Z7dihlIpVDvulTD+0WVRjK8EgJioJmYXq0jNG2JdSSaUH9zGBA73CeWGGj8dQe3nQfQJmmUZbI4/N5/sf0uGBn/HIkOxyEXxaBTN/46oZcXS6cDceuHvRgdMUT6z05pgSsZjdURZMqQz3qyJqVIFph68euk8iin5fKD9jL/Q56UA5tjYc2Ffsr94nQhbc/Y8jnWisLwV0clLCCGuRNaF/kkiy/wux0tkABRVjUFHmAmFjdRADkwzKCouI0CAIfnKdPOKETel7x6/y2S27S0jad8wktlo+l7nUrhSObpfbS66LT6g5oYmgQro/CO3QwYSUxNjAgUnuXonBwOuW/7baosD10GDK1869U50idl4oxD+KTZCZH4yC/xU7xMuxnsi45Y7PElXhFp1zQnawhn+tAQZsc177FvT/DAG1K+XSwxctNmXPYDcW0VwBeDj/rWqgk8Y88vBSYqULAhDS5DIK8Y2+U2Yz2Gbz+yEJmaewnqZNN0/j1+iJ5IRMfRpktHoFdwNycfciCv2sU2s9HZ1UPo="
